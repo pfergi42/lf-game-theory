@@ -1,0 +1,35 @@
+{
+  "name": "lf-game-theory",
+  "version": "0.1.0",
+  "description": "AI Agent Game Theory Experiment with Real Bitcoin Lightning Stakes",
+  "type": "module",
+  "main": "dist/coordinator.js",
+  "scripts": {
+    "build": "tsc && cp src/data/schema.sql dist/data/schema.sql",
+    "start": "node dist/coordinator.js",
+    "pilot": "node dist/coordinator.js --config experiments/pilot.yaml",
+    "full": "node dist/coordinator.js --config experiments/full.yaml",
+    "db:init": "node dist/data/init-db.js",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "better-sqlite3": "^11.7.0",
+    "openai": "^4.77.0",
+    "yaml": "^2.7.0",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.0",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.0",
+    "eslint": "^9.16.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

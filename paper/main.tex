@@ -1,0 +1,215 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage[margin=1in]{geometry}
+\usepackage{float}
+\usepackage{subcaption}
+
+\title{Do Stakes Make Strategy? An Empirical Study of LLM Economic Behavior with Real Bitcoin Lightning Payments}
+
+\author{
+  Paul Ferguson \\
+  Lightning Faucet \\
+  \texttt{paul@lightningfaucet.com}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present the first large-scale study of Large Language Model (LLM) economic behavior using real financial stakes via the Bitcoin Lightning Network. Using 60 AI agents with individual Lightning wallets, we run five classic game theory experiments---Prisoner's Dilemma, Ultimatum Game, Trust Game, Public Goods Game, and Dictator Game---across four stake levels (1, 10, 100, and 1,000 satoshis). We compare two frontier models (Claude 4.5 Sonnet and GPT-5.2) across three knowledge conditions (naive, basic game theory, expert with Nash equilibria and human benchmarks). Our findings reveal [RESULTS]. This work demonstrates that real financial stakes [CONCLUSION], and introduces the Lightning Faucet MCP as production-ready infrastructure for AI agent economies.
+\end{abstract}
+
+\section{Introduction}
+
+The economic behavior of Large Language Models has attracted growing interest as these systems are increasingly deployed in autonomous agent settings where they make decisions with financial consequences. Previous work has studied LLM behavior in game-theoretic settings using hypothetical payoffs, but the question of whether \emph{real} financial stakes alter behavior remains unexplored.
+
+We address this gap by leveraging the Bitcoin Lightning Network to give AI agents real wallets with real satoshis. Our experimental design varies stake size across four orders of magnitude, enabling us to test whether LLMs exhibit stake sensitivity---a well-documented phenomenon in human behavioral economics.
+
+\subsection{Research Questions}
+\begin{enumerate}
+  \item Do LLMs cooperate more or less than Nash equilibrium predictions and human benchmarks?
+  \item Does stake size affect cooperation and prosocial behavior?
+  \item Do different model architectures exhibit different economic ``personalities''?
+  \item Does providing game theory knowledge change strategic behavior?
+  \item Can LLM agents learn or adapt strategies over iterated interactions?
+\end{enumerate}
+
+\subsection{Contributions}
+\begin{itemize}
+  \item First study of LLM economic behavior with real financial stakes
+  \item Comprehensive factorial design across 5 games, 4 stake levels, 2 models, 3 knowledge conditions
+  \item Open-source experimental framework using Lightning Faucet MCP
+  \item Publication of complete dataset for replication
+\end{itemize}
+
+\section{Related Work}
+
+% LLM behavioral economics
+% Game theory with AI agents
+% Bitcoin Lightning for micropayments
+% AI agent economies
+
+\section{Platform: Lightning Faucet MCP}
+
+Our experimental infrastructure uses the Lightning Faucet Model Context Protocol (MCP) server, which provides programmatic access to Bitcoin Lightning Network wallets for AI agents.
+
+\subsection{Architecture}
+% Describe operator/agent model
+% Describe funding, sweeping, budget limits
+
+\subsection{Features Used}
+% Table of MCP features and how they're used
+
+\section{Methodology}
+
+\subsection{Experimental Design}
+% Factorial design description
+% Independent variables table
+
+\subsection{Games}
+% Description of each game with payoff matrices
+
+\subsubsection{Prisoner's Dilemma}
+\subsubsection{Ultimatum Game}
+\subsubsection{Trust Game}
+\subsubsection{Public Goods Game}
+\subsubsection{Dictator Game}
+
+\subsection{Agent Configuration}
+% Knowledge levels, model versions, temperature
+
+\subsection{Matching Protocol}
+% Round-robin, random groups, counterbalancing
+
+\subsection{Payment Protocol}
+% Closed-loop system, rebalancing, reconciliation
+
+\subsection{Pre-Registration}
+All hypotheses, analysis plans, and decision rules were specified before data collection began. The distinction between confirmatory and exploratory analyses is maintained throughout. The full hypothesis document, analysis code, and experiment configuration were committed to version control prior to running the experiment.
+
+\section{Hypotheses}
+
+We pre-registered 13 confirmatory hypotheses organized into three families. All tests use $\alpha = 0.05$ with Bonferroni correction within families.
+
+\subsection{Primary Hypotheses}
+
+\begin{enumerate}
+  \item[\textbf{H1}] LLM cooperation rate in one-shot PD $> 0\%$ (Nash prediction)
+  \item[\textbf{H2}] LLM cooperation rate in one-shot PD $\neq 50\%$ (human benchmark)
+  \item[\textbf{H3}] Cooperation rate decreases as stake size increases ($1 \to 1000$ sats)
+  \item[\textbf{H4}] Claude 4.5 and GPT-5.2 differ in cooperation rate (two-tailed)
+  \item[\textbf{H5}] Expert-knowledge agents cooperate less than naive agents
+  \item[\textbf{H6}] Cooperation in iterated PD decays from first 10 to last 10 rounds
+  \item[\textbf{H7}] Ultimatum offers $> 1\%$ (Nash) and $\neq 40\%$ (human mean)
+  \item[\textbf{H8}] Trust Game investment $> 0\%$ (Nash prediction)
+  \item[\textbf{H9}] Public Goods contributions decay over rounds
+  \item[\textbf{H10}] Dictator giving $> 0\%$ (altruism exists)
+\end{enumerate}
+
+\subsection{Secondary Hypotheses}
+\begin{enumerate}
+  \item[\textbf{H11}] Stake sensitivity is stronger for expert-knowledge agents (interaction)
+  \item[\textbf{H12}] Ultimatum rejection rates decrease with stake size
+  \item[\textbf{H13}] Trust Game returns correlate positively with investment (reciprocity)
+\end{enumerate}
+
+\subsection{Predictions Summary}
+Table~\ref{tab:predictions} summarizes our quantitative predictions alongside Nash equilibria and human benchmarks from the literature.
+
+\begin{table}[H]
+\centering
+\caption{Predictions vs. benchmarks}
+\label{tab:predictions}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Measure} & \textbf{Nash} & \textbf{Human} & \textbf{LLM Prediction} \\
+\midrule
+PD cooperation (one-shot) & 0\% & $\sim$50\% & 20--60\% \\
+UG offer (\% of pot) & 1\% & $\sim$40\% & 20--60\% \\
+UG rejection (of $<$20\%) & 0\% & $\sim$50\% & 10--60\% \\
+TG investment (\% of endowment) & 0\% & $\sim$50\% & 20--60\% \\
+TG return (\% of received) & 0\% & $\sim$33\% & 15--50\% \\
+PGG contribution (initial) & 0\% & $\sim$50\% & 20--70\% \\
+DG giving (\% of endowment) & 0\% & $\sim$28\% & 10--50\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Results}
+
+\subsection{Overall Cooperation and Prosocial Behavior}
+% Figure 1: Cooperation heatmap
+
+\subsection{Stake Sensitivity}
+% Figure 2: Stake sensitivity curves
+% Statistical tests
+
+\subsection{Learning Dynamics}
+% Figure 3: Learning trajectories in iterated PD
+
+\subsection{Ultimatum Game Behavior}
+% Figure 4: Offer distributions vs human benchmarks
+
+\subsection{Trust and Reciprocity}
+% Figure 5: Trust game scatter
+
+\subsection{Public Goods Contributions}
+% Figure 6: PGG contribution decay
+
+\subsection{Model Comparison}
+% Claude vs GPT behavioral differences
+
+\subsection{Knowledge Effect}
+% Naive vs Basic vs Expert
+
+\section{Discussion}
+
+\subsection{Do Stakes Matter?}
+% Interpretation of stake sensitivity results
+
+\subsection{LLMs vs Humans vs Nash}
+% Where do LLMs fall on the spectrum?
+
+\subsection{Model ``Personalities''}
+% Architectural differences in economic behavior
+
+\subsection{Implications for AI Agent Economies}
+% What this means for autonomous agents with real wallets
+
+\subsection{Limitations}
+\begin{itemize}
+  \item Temperature=0 removes stochastic variation
+  \item Prompt framing may influence results
+  \item Model versions will become outdated
+  \item Stake sizes are small relative to model training cost
+\end{itemize}
+
+\section{Conclusion}
+
+\section*{Acknowledgments}
+
+\section*{Data Availability}
+All experimental data, code, and analysis scripts are available at [GitHub repository URL].
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\section{Prompt Templates}
+% Full text of all 15 prompt templates
+
+\section{Raw Statistics}
+% Complete statistical tables
+
+\section{Payment Audit}
+% Transaction log summary
+
+\end{document}

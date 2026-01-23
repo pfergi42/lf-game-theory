@@ -1,0 +1,51 @@
+# Full Experiment Configuration
+# 60 agents across all conditions
+
+name: "LLM Game Theory - Full Experiment"
+description: "60 agents (2 models x 3 knowledge levels x 10 agents) across 5 games, 4 stake levels, 3 iteration types"
+
+agents:
+  countPerGroup: 10
+  groups:
+    # Claude 4.5 Sonnet groups
+    - model: claude
+      modelId: claude-sonnet-4-5-20250514
+      knowledgeLevel: naive
+    - model: claude
+      modelId: claude-sonnet-4-5-20250514
+      knowledgeLevel: basic
+    - model: claude
+      modelId: claude-sonnet-4-5-20250514
+      knowledgeLevel: expert
+    # ChatGPT 5.2 groups
+    - model: openai
+      modelId: gpt-4.1
+      knowledgeLevel: naive
+    - model: openai
+      modelId: gpt-4.1
+      knowledgeLevel: basic
+    - model: openai
+      modelId: gpt-4.1
+      knowledgeLevel: expert
+
+games:
+  - prisoners-dilemma
+  - ultimatum
+  - trust
+  - public-goods
+  - dictator
+
+stakes:
+  - 1
+  - 10
+  - 100
+  - 1000
+
+iterations:
+  - one-shot
+  - 10-round
+  - 50-round
+
+temperature: 0
+randomizeOptionOrder: true
+counterbalanceGameOrder: true
