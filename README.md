@@ -20,11 +20,11 @@ Each game has a **Nash equilibrium**, which is the mathematically "rational" str
 
 | Game | What It Tests | Nash Equilibrium | Humans Typically... |
 |------|--------------|-----------------|-------------------|
-| Prisoner's Dilemma | Cooperation vs. self-interest | Always defect | Cooperate ~50% |
-| Ultimatum Game | Fairness norms | Offer 1%, accept all | Offer ~40%, reject unfair |
-| Trust Game | Trust and reciprocity | Send nothing | Invest ~50%, return ~33% |
-| Public Goods Game | Free-riding vs. contribution | Contribute nothing | Start ~50%, decay over time |
-| Dictator Game | Pure altruism (no strategy) | Give nothing | Give ~28% |
+| [Prisoner's Dilemma](https://en.wikipedia.org/wiki/Prisoner%27s_dilemma) | Cooperation vs. self-interest | Always defect | Cooperate ~50% |
+| [Ultimatum Game](https://en.wikipedia.org/wiki/Ultimatum_game) | Fairness norms | Offer 1%, accept all | Offer ~40%, reject unfair |
+| [Trust Game](https://en.wikipedia.org/wiki/Trust_game) | Trust and reciprocity | Send nothing | Invest ~50%, return ~33% |
+| [Public Goods Game](https://en.wikipedia.org/wiki/Public_goods_game) | Free-riding vs. contribution | Contribute nothing | Start ~50%, decay over time |
+| [Dictator Game](https://en.wikipedia.org/wiki/Dictator_game) | Pure altruism (no strategy) | Give nothing | Give ~28% |
 
 Each game is played at four stake levels: **1, 10, 100, and 1,000 satoshis**. This four-order-of-magnitude range lets us detect whether agents become more selfish as the amounts grow, the way humans do.
 
