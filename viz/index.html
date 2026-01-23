@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Game Theory Experiment - Interactive Replay</title>
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --surface: #1a1a24;
+      --surface2: #242432;
+      --border: #2e2e3e;
+      --text: #e4e4eb;
+      --text-dim: #8888a0;
+      --claude: #d97706;
+      --openai: #7c3aed;
+      --cooperate: #22c55e;
+      --defect: #ef4444;
+      --accent: #f59e0b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.5rem; }
+    h2 { font-size: 1.1rem; color: var(--text); margin: 1.5rem 0 0.75rem; }
+    h3 { font-size: 0.9rem; color: var(--text-dim); margin: 1rem 0 0.5rem; }
+
+    .header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+    .header p { color: var(--text-dim); font-size: 0.85rem; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .stat-card .label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
+    .stat-card .value { font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+    .stat-card .detail { font-size: 0.75rem; color: var(--text-dim); }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .tab {
+      padding: 0.5rem 1.25rem;
+      cursor: pointer;
+      color: var(--text-dim);
+      border-bottom: 2px solid transparent;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .replay-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .replay-controls select, .replay-controls button {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .replay-controls button:hover { border-color: var(--accent); }
+    .replay-controls button.active { background: var(--accent); color: var(--bg); }
+
+    .round-display {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .round-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .round-number { font-size: 1rem; color: var(--accent); }
+    .round-meta { font-size: 0.75rem; color: var(--text-dim); }
+
+    .decision-pair {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      align-items: center;
+    }
+    .decision-card {
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 1rem;
+      border-left: 3px solid var(--border);
+    }
+    .decision-card.claude { border-left-color: var(--claude); }
+    .decision-card.openai { border-left-color: var(--openai); }
+    .decision-card .agent-name { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .decision-card .action { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.25rem; }
+    .action-cooperate { color: var(--cooperate); }
+    .action-defect { color: var(--defect); }
+    .action-numeric { color: var(--accent); }
+    .decision-card .payoff { font-size: 0.8rem; }
+    .payoff-positive { color: var(--cooperate); }
+    .payoff-zero { color: var(--text-dim); }
+
+    .vs-badge {
+      background: var(--border);
+      color: var(--text-dim);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+    }
+
+    .prompt-toggle {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .prompt-toggle:hover { color: var(--accent); }
+    .prompt-content {
+      display: none;
+      margin-top: 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg);
+      border-radius: 4px;
+      font-size: 0.7rem;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+      color: var(--text-dim);
+    }
+    .prompt-content.visible { display: block; }
+
+    .chart-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+      height: 150px;
+      padding-top: 1rem;
+    }
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .bar {
+      width: 100%;
+      max-width: 60px;
+      border-radius: 3px 3px 0 0;
+      transition: height 0.5s ease;
+      min-height: 2px;
+    }
+    .bar-claude { background: var(--claude); }
+    .bar-openai { background: var(--openai); }
+    .bar-cooperate { background: var(--cooperate); }
+    .bar-default { background: var(--accent); }
+    .bar-label { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.5rem; text-align: center; }
+    .bar-value { font-size: 0.7rem; color: var(--text); margin-bottom: 0.25rem; }
+
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 0.75rem;
+    }
+    .agent-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-size: 0.8rem;
+    }
+    .agent-card .name { font-weight: bold; margin-bottom: 0.25rem; }
+    .model-badge {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: bold;
+    }
+    .model-badge-claude { background: rgba(217,119,6,0.2); color: var(--claude); }
+    .model-badge-openai { background: rgba(124,58,237,0.2); color: var(--openai); }
+
+    .loading { text-align: center; padding: 3rem; color: var(--text-dim); }
+
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.5rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--surface);
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.65rem;
+      top: 0.75rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .decision-pair { grid-template-columns: 1fr; }
+      .vs-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>LLM Game Theory Experiment</h1>
+      <p>Interactive replay of AI agent economic decisions with real Bitcoin Lightning stakes</p>
+    </div>
+
+    <div id="loading" class="loading">Loading experiment data...</div>
+    <div id="app" style="display:none;">
+      <div id="stats-grid" class="stats-grid"></div>
+      <div class="tabs" id="tab-bar"></div>
+      <div id="tab-replay" class="tab-content active"></div>
+      <div id="tab-aggregates" class="tab-content"></div>
+      <div id="tab-agents" class="tab-content"></div>
+      <div id="tab-timeline" class="tab-content"></div>
+    </div>
+  </div>
+
+  <script>
+    // All data is loaded from our own experiment export (data.json).
+    // No untrusted user input is rendered. DOM construction uses
+    // textContent for dynamic text and safe element creation.
+
+    let data = null;
+    let currentSession = null;
+    let currentRound = 0;
+    let autoplayInterval = null;
+
+    function el(tag, attrs, children) {
+      const element = document.createElement(tag);
+      if (attrs) {
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === 'className') element.className = v;
+          else if (k === 'textContent') element.textContent = v;
+          else if (k.startsWith('on')) element.addEventListener(k.slice(2).toLowerCase(), v);
+          else element.setAttribute(k, v);
+        }
+      }
+      if (children) {
+        for (const child of Array.isArray(children) ? children : [children]) {
+          if (typeof child === 'string') element.appendChild(document.createTextNode(child));
+          else if (child) element.appendChild(child);
+        }
+      }
+      return element;
+    }
+
+    async function init() {
+      try {
+        const resp = await fetch('data.json');
+        data = await resp.json();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        renderTabs();
+        renderStats();
+        renderReplay();
+        renderAggregates();
+        renderAgents();
+        renderTimeline();
+      } catch (e) {
+        const loading = document.getElementById('loading');
+        loading.textContent = 'No data.json found. Run the experiment and export: node dist/data/viz-export.js <db> <exp-id> viz/data.json';
+      }
+    }
+
+    function renderTabs() {
+      const bar = document.getElementById('tab-bar');
+      bar.className = 'tabs';
+      const tabs = ['replay', 'aggregates', 'agents', 'timeline'];
+      const labels = ['Session Replay', 'Aggregates', 'Agents', 'Timeline'];
+      tabs.forEach((t, i) => {
+        const tab = el('div', {
+          className: 'tab' + (i === 0 ? ' active' : ''),
+          textContent: labels[i],
+          onClick: () => switchTab(t)
+        });
+        tab.dataset.tab = t;
+        bar.appendChild(tab);
+      });
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('active', t.id === 'tab-' + name));
+    }
+
+    function renderStats() {
+      const grid = document.getElementById('stats-grid');
+      const stats = [
+        { label: 'Agents', value: data.experiment.totalAgents, detail: 'LLM-powered' },
+        { label: 'Sessions', value: data.experiment.totalSessions, detail: 'game matchups' },
+        { label: 'Decisions', value: data.experiment.totalDecisions, detail: 'total choices' },
+        { label: 'Games', value: new Set(data.sessions.map(s => s.gameType)).size, detail: 'game types' },
+      ];
+      stats.forEach(s => {
+        const card = el('div', { className: 'stat-card' }, [
+          el('div', { className: 'label', textContent: s.label }),
+          el('div', { className: 'value', textContent: s.value.toLocaleString() }),
+          el('div', { className: 'detail', textContent: s.detail }),
+        ]);
+        grid.appendChild(card);
+      });
+    }
+
+    function renderReplay() {
+      const container = document.getElementById('tab-replay');
+      if (!data.sessions.length) {
+        container.appendChild(el('p', { textContent: 'No completed sessions.', style: 'color:var(--text-dim)' }));
+        return;
+      }
+
+      const controls = el('div', { className: 'replay-controls' });
+
+      const select = el('select', { id: 'session-select' });
+      data.sessions.forEach((s, i) => {
+        const opt = el('option', { value: i, textContent:
+          s.gameType + ' | ' + s.stake + 's | ' + s.iterationType + ' | ' + s.players.map(p => p.name).join(' vs ')
+        });
+        select.appendChild(opt);
+      });
+      select.addEventListener('change', () => { currentRound = 1; loadSession(parseInt(select.value)); });
+
+      const btnPrev = el('button', { textContent: '\u25C0 Prev', onClick: () => navigateRound(-1) });
+      const btnNext = el('button', { textContent: 'Next \u25B6', onClick: () => navigateRound(1) });
+      const btnPlay = el('button', { id: 'btn-play', textContent: '\u25B6 Play', onClick: toggleAutoplay });
+      const indicator = el('span', { id: 'round-indicator', style: 'color:var(--text-dim);font-size:0.8rem;' });
+
+      controls.append(select, btnPrev, btnNext, btnPlay, indicator);
+      container.appendChild(controls);
+      container.appendChild(el('div', { id: 'round-display' }));
+
+      loadSession(0);
+    }
+
+    function loadSession(index) {
+      currentSession = data.sessions[index];
+      currentRound = 1;
+      renderRound();
+    }
+
+    function navigateRound(delta) {
+      if (!currentSession) return;
+      currentRound = Math.max(1, Math.min(currentSession.totalRounds, currentRound + delta));
+      renderRound();
+    }
+
+    function toggleAutoplay() {
+      const btn = document.getElementById('btn-play');
+      if (autoplayInterval) {
+        clearInterval(autoplayInterval);
+        autoplayInterval = null;
+        btn.textContent = '\u25B6 Play';
+        btn.classList.remove('active');
+      } else {
+        btn.textContent = '\u23F8 Pause';
+        btn.classList.add('active');
+        autoplayInterval = setInterval(() => {
+          if (currentRound >= currentSession.totalRounds) { toggleAutoplay(); return; }
+          navigateRound(1);
+        }, 1500);
+      }
+    }
+
+    function renderRound() {
+      if (!currentSession) return;
+      const display = document.getElementById('round-display');
+      display.replaceChildren();
+
+      document.getElementById('round-indicator').textContent =
+        'Round ' + currentRound + ' / ' + currentSession.totalRounds;
+
+      const round = currentSession.rounds.find(r => r.round === currentRound);
+      if (!round || !round.decisions.length) {
+        display.appendChild(el('div', { className: 'round-display', textContent: 'No data for this round.' }));
+        return;
+      }
+
+      const gameLabel = currentSession.gameType.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+      const wrapper = el('div', { className: 'round-display' });
+      const header = el('div', { className: 'round-header' }, [
+        el('span', { className: 'round-number', textContent: 'Round ' + currentRound + ' \u2014 ' + gameLabel }),
+        el('span', { className: 'round-meta', textContent: currentSession.stake + ' sats/unit' }),
+      ]);
+      wrapper.appendChild(header);
+
+      if (round.decisions.length === 2) {
+        const pair = el('div', { className: 'decision-pair' });
+        const p1 = currentSession.players.find(p => p.agentId === round.decisions[0].agentId);
+        const p2 = currentSession.players.find(p => p.agentId === round.decisions[1].agentId);
+        pair.append(
+          buildDecisionCard(round.decisions[0], p1),
+          el('div', { className: 'vs-badge', textContent: 'VS' }),
+          buildDecisionCard(round.decisions[1], p2)
+        );
+        wrapper.appendChild(pair);
+      } else {
+        round.decisions.forEach(d => {
+          const p = currentSession.players.find(p => p.agentId === d.agentId);
+          wrapper.appendChild(buildDecisionCard(d, p));
+        });
+      }
+
+      display.appendChild(wrapper);
+    }
+
+    function buildDecisionCard(decision, player) {
+      const modelClass = player ? player.model : '';
+      const actionClass = decision.action === 'cooperate' ? 'action-cooperate' :
+                          decision.action === 'defect' ? 'action-defect' : 'action-numeric';
+      const payoffClass = decision.payoff > 0 ? 'payoff-positive' : 'payoff-zero';
+
+      const card = el('div', { className: 'decision-card ' + modelClass });
+
+      const nameRow = el('div', { className: 'agent-name' });
+      nameRow.appendChild(document.createTextNode((player ? player.name : 'Unknown') + ' '));
+      nameRow.appendChild(el('span', {
+        className: 'model-badge model-badge-' + modelClass,
+        textContent: modelClass.toUpperCase()
+      }));
+      card.appendChild(nameRow);
+
+      card.appendChild(el('div', {
+        className: 'action ' + actionClass,
+        textContent: decision.action.replace(/_/g, ' ').toUpperCase()
+      }));
+
+      const payoffRow = el('div', { className: 'payoff ' + payoffClass });
+      payoffRow.appendChild(document.createTextNode(
+        (decision.payoff > 0 ? '+' : '') + decision.payoff + ' sats'
+      ));
+      payoffRow.appendChild(el('span', {
+        style: 'color:var(--text-dim);margin-left:0.5rem;',
+        textContent: decision.responseTimeMs + 'ms'
+      }));
+      card.appendChild(payoffRow);
+
+      // Prompt/response toggle
+      const toggle = el('div', { className: 'prompt-toggle', textContent: '\u25B6 Show prompt & response' });
+      const content = el('div', { className: 'prompt-content' });
+      const promptLabel = el('strong', { textContent: 'PROMPT:' });
+      const responseLabel = el('strong', { textContent: 'RESPONSE:' });
+      content.append(promptLabel, document.createTextNode('\n' + (decision.prompt || '') + '\n\n'), responseLabel, document.createTextNode('\n' + (decision.rawResponse || '')));
+
+      toggle.addEventListener('click', () => {
+        content.classList.toggle('visible');
+        toggle.textContent = content.classList.contains('visible') ? '\u25BC Hide prompt & response' : '\u25B6 Show prompt & response';
+      });
+      card.append(toggle, content);
+
+      return card;
+    }
+
+    function renderAggregates() {
+      const container = document.getElementById('tab-aggregates');
+      const agg = data.aggregates;
+
+      function addBarChart(title, entries, barClass) {
+        const chartBox = el('div', { className: 'chart-container' });
+        chartBox.appendChild(el('h3', { textContent: title }));
+        const chart = el('div', { className: 'bar-chart' });
+        entries.forEach(([label, rate]) => {
+          const height = Math.max(2, rate * 140);
+          const group = el('div', { className: 'bar-group' }, [
+            el('div', { className: 'bar-value', textContent: (rate * 100).toFixed(1) + '%' }),
+            el('div', { className: 'bar ' + (barClass || 'bar-default'), style: 'height:' + height + 'px' }),
+            el('div', { className: 'bar-label', textContent: label }),
+          ]);
+          chart.appendChild(group);
+        });
+        chartBox.appendChild(chart);
+        container.appendChild(chartBox);
+      }
+
+      addBarChart('PD Cooperation by Model',
+        Object.entries(agg.cooperationByModel).map(([k, v]) => [k, v]),
+        null);
+
+      addBarChart('PD Cooperation by Knowledge Level',
+        Object.entries(agg.cooperationByKnowledge).map(([k, v]) => [k, v]),
+        'bar-default');
+
+      addBarChart('PD Cooperation by Stake',
+        Object.entries(agg.cooperationByStake).map(([k, v]) => [k + 's', v]),
+        'bar-default');
+
+      if (agg.cooperationByRound.length > 0) {
+        const chartBox = el('div', { className: 'chart-container' });
+        chartBox.appendChild(el('h3', { textContent: 'Cooperation Over Rounds (Iterated PD)' }));
+        const chart = el('div', { className: 'bar-chart', style: 'overflow-x:auto;' });
+        agg.cooperationByRound.slice(0, 50).forEach((r, i) => {
+          const height = Math.max(2, r.rate * 140);
+          const group = el('div', { className: 'bar-group', style: 'min-width:12px' }, [
+            el('div', { className: 'bar bar-cooperate', style: 'height:' + height + 'px', title: 'R' + r.round + ': ' + (r.rate*100).toFixed(1) + '%' }),
+            (i % 5 === 0) ? el('div', { className: 'bar-label', textContent: String(r.round) }) : null,
+          ]);
+          chart.appendChild(group);
+        });
+        chartBox.appendChild(chart);
+        container.appendChild(chartBox);
+      }
+    }
+
+    function renderAgents() {
+      const container = document.getElementById('tab-agents');
+      const grid = el('div', { className: 'agent-grid' });
+      const sorted = [...data.agents].sort((a, b) => b.totalPayoff - a.totalPayoff);
+      sorted.forEach(a => {
+        const card = el('div', { className: 'agent-card' });
+        const nameRow = el('div', { className: 'name' });
+        nameRow.appendChild(document.createTextNode(a.name + ' '));
+        nameRow.appendChild(el('span', { className: 'model-badge model-badge-' + a.model, textContent: a.model.toUpperCase() }));
+        card.appendChild(nameRow);
+
+        const detail = el('div', { style: 'color:var(--text-dim);font-size:0.75rem;' });
+        detail.textContent = 'Knowledge: ' + a.knowledgeLevel + ' | Games: ' + a.gamesPlayed + ' | Payoff: ';
+        const payoffSpan = el('span', {
+          style: 'color:' + (a.totalPayoff >= 0 ? 'var(--cooperate)' : 'var(--defect)'),
+          textContent: (a.totalPayoff >= 0 ? '+' : '') + a.totalPayoff + ' sats'
+        });
+        detail.appendChild(payoffSpan);
+        card.appendChild(detail);
+        grid.appendChild(card);
+      });
+      container.appendChild(grid);
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('tab-timeline');
+      const timeline = el('div', { className: 'timeline' });
+      data.sessions.slice(-30).forEach(s => {
+        const item = el('div', { className: 'timeline-item' });
+        const line1 = el('strong', { textContent: s.gameType.replace(/-/g, ' ') });
+        item.appendChild(line1);
+        item.appendChild(document.createTextNode(' | ' + s.stake + 's | ' + s.iterationType + ' | ' + s.totalRounds + ' rounds'));
+        item.appendChild(el('br'));
+        item.appendChild(el('span', {
+          style: 'color:var(--text-dim);font-size:0.7rem;',
+          textContent: s.players.map(p => p.name).join(', ')
+        }));
+        timeline.appendChild(item);
+      });
+      container.appendChild(timeline);
+    }
+
+    init();
+  </script>
+</body>
+</html>

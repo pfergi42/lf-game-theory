@@ -63,3 +63,9 @@ Record of every design decision and rationale.
 **Decision:** The pilot study validates the technical pipeline only. Pilot data is NOT used for hypothesis testing and is reported separately from the main experiment.
 **Rationale:** Using pilot data for both validation and hypothesis testing is double-dipping. The pilot may reveal prompt issues or API problems that require changes, which would invalidate any statistical conclusions drawn from the same data.
 **Alternatives Considered:** Combined pilot+main (methodologically problematic), no pilot (risky).
+
+## D011: Agent-vs-Human Interactions Deferred to Future Paper
+**Date:** 2026-01-23
+**Decision:** Keep Paper 1 focused on agent-vs-agent experiments. Agent-vs-human interactions are described in Future Work section but not implemented or tested in this study.
+**Rationale:** Adding human participants would require ethics review/IRB, introduce uncontrollable behavioral variance, raise regulatory questions (money transmission), and dilute the clean factorial design. The current paper is publishable on its own. Agent-vs-human is a natural and compelling Paper 2.
+**Alternatives Considered:** Including human participants now (scope creep, regulatory risk), ignoring the direction entirely (misses the larger vision).

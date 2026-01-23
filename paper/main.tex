@@ -190,7 +190,20 @@ DG giving (\% of endowment) & 0\% & $\sim$28\% & 10--50\% \\
   \item Prompt framing may influence results
   \item Model versions will become outdated
   \item Stake sizes are small relative to model training cost
+  \item Agent-vs-agent interactions may not generalize to agent-vs-human settings
 \end{itemize}
+
+\subsection{Future Work: From Simulated to Real Economies}
+
+This study examines AI agent behavior in controlled, symmetric settings where all participants are LLMs. A natural and important extension is to study agent behavior when interacting with \emph{real human economic actors}. Three progressively more realistic settings merit investigation:
+
+\begin{enumerate}
+  \item \textbf{Asymmetric information games:} Agents play Ultimatum or Trust games against human participants who may or may not know their counterpart is an AI. This tests whether agents calibrate behavior differently when facing humans.
+  \item \textbf{Market participation:} Agents act as buyers or sellers of real digital goods (e.g., API access via L402), negotiating prices and making purchase decisions with real humans on the other side.
+  \item \textbf{Autonomous economic agency:} Agents with persistent wallets and budgets operate as ongoing economic actors---purchasing inputs, providing services, and managing cash flow over extended periods.
+\end{enumerate}
+
+Each step introduces additional complexity (human behavioral variance, regulatory considerations, asymmetric information) but moves closer to understanding how AI agents will function in real economies. The infrastructure demonstrated here---individual Lightning wallets with programmable budgets and full transaction auditability---is designed to support these extensions without architectural changes.
 
 \section{Conclusion}
 

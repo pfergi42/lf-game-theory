@@ -42,3 +42,32 @@ Multiple agents are funded/swept in sequence with rate limiting. Documents the p
 - Sweep operation latency: TBD
 - Rate limit behavior: TBD
 - Reconciliation accuracy: TBD
+
+## Roadmap: From Research to Production
+
+This game theory experiment is Step 1 in a larger progression:
+
+### Step 1: Agent vs. Agent (This Paper)
+- Controlled environment, symmetric information
+- All participants are LLMs with MCP wallets
+- Demonstrates: agent lifecycle, funding, transfers, budgets, analytics
+- **MCP features exercised:** create_agent, fund_agent, sweep_agent, check_balance, set_budget
+
+### Step 2: Agent vs. Human (Future Paper)
+- Asymmetric information (humans may not know they're playing against AI)
+- Agents negotiate with real people
+- Agents pay real people (via pay_invoice or pay_lightning_address)
+- Real people pay agents (via create_invoice)
+- **Additional MCP features:** pay_invoice, create_invoice, pay_lightning_address, webhooks
+
+### Step 3: Autonomous Agent Economy (Product)
+- Agents operate as persistent economic actors
+- Agents provide and consume L402 API services
+- Agents manage their own budgets and cash flow
+- Agents negotiate prices dynamically
+- **Additional MCP features:** pay_l402_api, lnurl_auth, keysend, register_webhook
+
+### Key Insight for Messaging
+The same MCP infrastructure that runs a 60-agent research experiment can run a 1000-agent
+production economy. No architectural changes needed - just more agents and higher budgets.
+This is what "production-ready" means.
