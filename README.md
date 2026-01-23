@@ -67,7 +67,7 @@ The experiment uses a **closed-loop payment system**:
 
 Net cost in sats: approximately zero. The real cost is LLM API calls (~60,000 decisions across two providers).
 
-This is implemented using the [Lightning Faucet](https://lightningfaucet.com) MCP server, which provides programmatic wallet management for AI agents on the Bitcoin Lightning Network.
+This is implemented using the [Lightning Faucet MCP server](https://lightningfaucet.com/ai-agents/), which provides programmatic wallet management for AI agents on the Bitcoin Lightning Network.
 
 ## Architecture
 
