@@ -16,7 +16,7 @@ This matters because AI agents are increasingly being deployed in settings where
 
 We create 60 AI agents (30 powered by Claude 4.5 Sonnet, 30 by GPT-5.2) and have them play five well-studied economics games against each other.
 
-Each game has a **Nash equilibrium**, which is the mathematically "rational" strategy where no player can improve their outcome by changing their decision alone. In theory, purely rational agents should always play the Nash equilibrium. In practice, humans consistently don't. They cooperate when they "shouldn't," share money they could keep, and punish unfair offers at their own expense. The question is whether LLMs behave more like the math or more like the humans.
+Each game has a **Nash equilibrium**, which is the mathematically "rational" strategy where no player can improve their outcome by changing their decision alone. In theory, purely rational agents should always play the Nash equilibrium. In practice, humans consistently don't. They cooperate when they "shouldn't," share money they could keep, and punish unfair offers at their own expense. **The question is whether LLMs behave more like the math or more like the humans.**
 
 | Game | What It Tests | Nash Equilibrium | Humans Typically... |
 |------|--------------|-----------------|-------------------|
