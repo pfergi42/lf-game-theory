@@ -2,7 +2,7 @@
 
 **An empirical study of LLM economic behavior with real Bitcoin Lightning payments.**
 
-This project runs classic game theory experiments using AI agents that have real Bitcoin wallets. Each agent makes decisions — cooperate or defect, offer or reject, invest or hoard — and the outcomes are settled in real satoshis on the Bitcoin Lightning Network.
+This project runs classic game theory experiments using AI agents that have real Bitcoin wallets. Each agent makes decisions (cooperate or defect, offer or reject, invest or hoard) and the outcomes are settled in real satoshis on the Bitcoin Lightning Network.
 
 The core question: **does giving AI agents real money change how they behave?**
 
@@ -10,11 +10,13 @@ The core question: **does giving AI agents real money change how they behave?**
 
 Most studies of LLM decision-making use hypothetical payoffs. The agent is told "imagine you have $100" and asked what it would do. But decades of behavioral economics research show that humans behave differently when real money is on the line. We don't know if the same is true for LLMs.
 
-This matters because AI agents are increasingly being deployed in settings where they handle real money — trading, negotiation, purchasing, pricing. Understanding whether they exhibit stake sensitivity (behaving differently as amounts increase) is a prerequisite for trusting them in economic roles.
+This matters because AI agents are increasingly being deployed in settings where they handle real money: trading, negotiation, purchasing, pricing. Understanding whether they exhibit stake sensitivity (behaving differently as amounts increase) is a prerequisite for trusting them in economic roles.
 
 ## What We're Doing
 
-We create 60 AI agents — 30 powered by Claude 4.5 Sonnet, 30 by GPT-5.2 — and have them play five well-studied economics games against each other:
+We create 60 AI agents (30 powered by Claude 4.5 Sonnet, 30 by GPT-5.2) and have them play five well-studied economics games against each other.
+
+Each game has a **Nash equilibrium**, which is the mathematically "rational" strategy where no player can improve their outcome by changing their decision alone. In theory, purely rational agents should always play the Nash equilibrium. In practice, humans consistently don't. They cooperate when they "shouldn't," share money they could keep, and punish unfair offers at their own expense. The question is whether LLMs behave more like the math or more like the humans.
 
 | Game | What It Tests | Nash Equilibrium | Humans Typically... |
 |------|--------------|-----------------|-------------------|
@@ -24,7 +26,7 @@ We create 60 AI agents — 30 powered by Claude 4.5 Sonnet, 30 by GPT-5.2 — an
 | Public Goods Game | Free-riding vs. contribution | Contribute nothing | Start ~50%, decay over time |
 | Dictator Game | Pure altruism (no strategy) | Give nothing | Give ~28% |
 
-Each game is played at four stake levels: **1, 10, 100, and 1,000 satoshis**. This four-order-of-magnitude range lets us detect whether agents become more selfish as the amounts grow — the way humans do.
+Each game is played at four stake levels: **1, 10, 100, and 1,000 satoshis**. This four-order-of-magnitude range lets us detect whether agents become more selfish as the amounts grow, the way humans do.
 
 ## Experimental Design
 
@@ -44,7 +46,7 @@ Each game is played at four stake levels: **1, 10, 100, and 1,000 satoshis**. Th
 - **Basic**: Agent knows the game name and standard framing.
 - **Expert**: Agent is given Nash equilibrium predictions and human behavioral benchmarks.
 
-This tests whether *knowing* the "rational" answer changes behavior — a question with direct implications for how we prompt agents in production.
+This tests whether *knowing* the "rational" answer changes behavior, a question with direct implications for how we prompt agents in production.
 
 ### Controls
 
@@ -82,7 +84,7 @@ Experiment Coordinator (TypeScript)
     |     Claude API + OpenAI API with standardized prompting
     |
     +-- Data Store (SQLite)
-    |     Every prompt, response, decision, and payment — verbatim
+    |     Every prompt, response, decision, and payment stored verbatim
     |
     +-- Analysis Pipeline (Python)
           Statistical tests, publication figures
@@ -187,4 +189,4 @@ Research code. Full dataset will be published alongside the paper for replicatio
 
 ## Author
 
-Paul Ferguson — [paul@lightningfaucet.com](mailto:paul@lightningfaucet.com)
+Paul Ferguson | [paul@lightningfaucet.com](mailto:paul@lightningfaucet.com)
