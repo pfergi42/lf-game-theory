@@ -90,6 +90,9 @@ Total conditions: 2 × 3 × 5 × 4 × 3 = 360
 - Reconcile: operator + sum(agents) should equal initial deposit
 - Report any discrepancy (expected: ~0 from rounding)
 
+### Fee Structure
+Internal operations (`fund_agent`, `sweep_agent`, `transfer_to_agent`) are ledger transfers within the Lightning Faucet platform and incur no Lightning Network routing fees. The 1-2% outgoing payment fee only applies to operations that route over the Lightning Network (`pay_invoice`, `pay_lightning_address`, `withdraw`). Since the experiment uses a closed-loop design with no external payments during execution, the only fee incurred is on the final operator withdrawal after the experiment concludes. This makes it practical to run thousands of internal micro-transactions without cumulative fee erosion.
+
 ## Pre-Registration
 
 This experiment follows pre-registration principles adapted from the Open Science Framework (OSF):
