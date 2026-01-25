@@ -128,6 +128,7 @@ lf-game-theory/
   docs/
     HYPOTHESES.md           # Pre-registered hypotheses
     METHODOLOGY.md          # Full experimental protocol
+    PROMPTS.md              # Prompt design and expected responses
     DECISIONS.md            # Design decisions with rationale
     RESEARCH_LOG.md         # Running log of progress
 ```
