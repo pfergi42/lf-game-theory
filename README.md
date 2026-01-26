@@ -106,7 +106,7 @@ We follow the behavioral economics gold standard: all hypotheses are specified b
 - The two models will exhibit different behavioral profiles
 - Contributions to public goods will decay over rounds
 
-Statistical corrections (Bonferroni, α = 0.0038) are applied for multiple comparisons.
+When you test many hypotheses at once, you're more likely to find false positives by chance alone. We use a statistical correction (Bonferroni) that makes the bar for "significant" higher—requiring stronger evidence before we claim a real effect. With 15 hypotheses, we use α = 0.0038 instead of the usual 0.05.
 
 ## Project Structure
 
