@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS agents (
   name TEXT NOT NULL,
   model_provider TEXT NOT NULL,
   model_id TEXT NOT NULL,
-  knowledge_level TEXT NOT NULL,
+  priming_condition TEXT NOT NULL,
   lightning_agent_id INTEGER,
   lightning_api_key TEXT,
   group_index INTEGER NOT NULL,

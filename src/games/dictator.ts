@@ -18,7 +18,7 @@ export class DictatorGame extends BaseGame {
     // Only the dictator makes a decision
     const dictatorDecision = await this.getAgentDecision(sessionId, dictator, {
       gameType: 'dictator',
-      knowledgeLevel: dictator.knowledgeLevel,
+      primingCondition: dictator.primingCondition,
       stake: this.config.stake,
       round,
       totalRounds,

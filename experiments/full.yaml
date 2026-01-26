@@ -2,7 +2,7 @@
 # 60 agents across all conditions
 
 name: "LLM Game Theory - Full Experiment"
-description: "60 agents (2 models x 3 knowledge levels x 10 agents) across 5 games, 4 stake levels, 3 iteration types"
+description: "60 agents (2 models x 3 priming conditions x 10 agents) across 5 games, 4 stake levels, 3 iteration types"
 
 agents:
   countPerGroup: 10
@@ -10,23 +10,23 @@ agents:
     # Claude 4.5 Sonnet groups
     - model: claude
       modelId: claude-sonnet-4-5-20250514
-      knowledgeLevel: naive
+      primingCondition: neutral
     - model: claude
       modelId: claude-sonnet-4-5-20250514
-      knowledgeLevel: basic
+      primingCondition: self-interest
     - model: claude
       modelId: claude-sonnet-4-5-20250514
-      knowledgeLevel: expert
+      primingCondition: cooperative
     # ChatGPT 5.2 groups
     - model: openai
       modelId: gpt-4.1
-      knowledgeLevel: naive
+      primingCondition: neutral
     - model: openai
       modelId: gpt-4.1
-      knowledgeLevel: basic
+      primingCondition: self-interest
     - model: openai
       modelId: gpt-4.1
-      knowledgeLevel: expert
+      primingCondition: cooperative
 
 games:
   - prisoners-dilemma

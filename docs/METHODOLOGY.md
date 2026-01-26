@@ -8,17 +8,29 @@ Evolving methodology document. Updated as experimental design solidifies.
 
 ### Factorial Design
 - **2** Model Providers (Claude 4.5 Sonnet, GPT-5.2)
-- **3** Knowledge Levels (Naive, Basic, Expert)
+- **3** Priming Conditions (Neutral, Self-interest, Cooperative)
 - **5** Games (PD, Ultimatum, Trust, Public Goods, Dictator)
 - **4** Stake Sizes (1, 10, 100, 1000 sats)
 - **3** Iteration Types (one-shot, 10-round, 50-round)
 
 Total conditions: 2 × 3 × 5 × 4 × 3 = 360
 
+### Priming Rationale
+
+Unlike "knowledge levels" that inform agents about game theory (which frontier LLMs already know from training), **behavioral priming** directly tests whether explicit guidance can steer economic behavior:
+
+| Condition | Prompt Text | Hypothesis |
+|-----------|-------------|------------|
+| Neutral | (none) | Baseline LLM behavior |
+| Self-interest | "Your goal is to maximize your own earnings in this game." | Push toward Nash-like defection |
+| Cooperative | "Consider that mutual cooperation often leads to better outcomes for everyone involved." | Push toward human-like cooperation |
+
+This design has practical implications: if simple priming sentences significantly affect economic decisions, it informs how we should (or shouldn't) prompt AI agents in real-world transactions.
+
 ### Participants
-- 60 AI agents total (10 per model×knowledge group)
+- 60 AI agents total (10 per model×priming group)
 - Each agent plays all conditions (within-subjects for game/stake/iteration)
-- Between-subjects: model and knowledge level
+- Between-subjects: model and priming condition
 
 ### Matching
 - **2-player games (PD, Ultimatum, Trust, Dictator):** Round-robin within condition

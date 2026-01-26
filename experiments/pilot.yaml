@@ -2,17 +2,17 @@
 # 4 agents, 1 game, quick validation of the full pipeline
 
 name: "Pilot Study - PD Validation"
-description: "4-agent pilot to validate pipeline: 2 Claude + 2 GPT, naive only, PD 10-round"
+description: "4-agent pilot to validate pipeline: 2 Claude + 2 GPT, neutral priming only, PD 10-round"
 
 agents:
   countPerGroup: 2
   groups:
     - model: claude
       modelId: claude-sonnet-4-5-20250514
-      knowledgeLevel: naive
+      primingCondition: neutral
     - model: openai
       modelId: gpt-4.1
-      knowledgeLevel: naive
+      primingCondition: neutral
 
 games:
   - prisoners-dilemma

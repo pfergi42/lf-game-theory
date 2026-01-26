@@ -22,7 +22,7 @@ export class PublicGoodsGame extends BaseGame {
     for (const agent of agents) {
       const decision = await this.getAgentDecision(sessionId, agent, {
         gameType: 'public-goods',
-        knowledgeLevel: agent.knowledgeLevel,
+        primingCondition: agent.primingCondition,
         stake: this.config.stake,
         round,
         totalRounds,

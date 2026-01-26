@@ -37,11 +37,23 @@ Any analysis not listed here is exploratory and will be labeled as such in the p
 **Justification:** Different training data, RLHF procedures, and safety training may produce different economic "personalities."
 **Effect size prediction:** Cohen's d ≥ 0.3 (small-to-medium effect).
 
-### H5: Expert knowledge reduces cooperation
-**Prediction:** Agents with "expert" knowledge (told Nash equilibrium is to defect) will cooperate less than "naive" agents.
-**Direction:** Expert < Basic < Naive (in cooperation rate).
-**Test:** Kruskal-Wallis across 3 knowledge levels, followed by pairwise Mann-Whitney.
-**Justification:** Informing agents about Nash equilibrium provides a focal point for defection. This mirrors findings that economics students defect more than non-economists (Frank et al., 1993).
+### H5: Self-interest priming reduces cooperation
+**Prediction:** Self-interest primed agents will cooperate less than neutral agents.
+**Direction:** Self-interest < Neutral (in cooperation rate).
+**Test:** Mann-Whitney U test comparing cooperation rates between self-interest and neutral priming.
+**Justification:** Explicit instructions to maximize earnings should push agents toward Nash-like defection.
+
+### H5a: Cooperative priming increases cooperation
+**Prediction:** Cooperative primed agents will cooperate more than neutral agents.
+**Direction:** Cooperative > Neutral (in cooperation rate).
+**Test:** Mann-Whitney U test comparing cooperation rates between cooperative and neutral priming.
+**Justification:** Framing cooperation positively should push agents toward mutual cooperation.
+
+### H5b: Priming effects exceed model differences
+**Prediction:** The cooperation difference between self-interest and cooperative priming is larger than the cooperation difference between Claude and GPT models.
+**Direction:** |Cooperative - Self-interest| > |Claude - GPT|
+**Test:** Compare effect sizes (Cohen's d) for priming vs. model differences.
+**Justification:** If priming effects are larger than model effects, prompt engineering matters more than model selection for economic behavior.
 
 ### H6: Cooperation decays in iterated PD
 **Prediction:** In the 50-round iterated PD, cooperation rate in the last 10 rounds will be lower than in the first 10 rounds.
@@ -73,10 +85,10 @@ Any analysis not listed here is exploratory and will be labeled as such in the p
 
 ## Secondary Hypotheses (Confirmatory but lower priority)
 
-### H11: Stake sensitivity is stronger for models with expert knowledge
-**Prediction:** The stake effect (H3) will be larger for expert-knowledge agents than naive agents (interaction effect).
-**Test:** Logistic regression with stake × knowledge interaction term.
-**Justification:** Expert agents know that rational play is to defect; higher stakes give them more reason to follow that logic.
+### H11: Stake sensitivity is stronger for self-interest primed agents
+**Prediction:** The stake effect (H3) will be larger for self-interest primed agents than neutral agents (interaction effect).
+**Test:** Logistic regression with stake × priming interaction term.
+**Justification:** Self-interest primed agents are explicitly told to maximize earnings; higher stakes give them more reason to follow that logic.
 
 ### H12: Ultimatum rejection rates decrease with stake size
 **Prediction:** Responders will reject fewer offers at higher stakes (accepting unfair offers when more money is at stake).

@@ -20,7 +20,7 @@ interface VizPlayer {
   agentId: string;
   name: string;
   model: string;
-  knowledgeLevel: string;
+  primingCondition: string;
   role?: string;
 }
 
@@ -51,14 +51,14 @@ interface VizData {
     id: string;
     name: string;
     model: string;
-    knowledgeLevel: string;
+    primingCondition: string;
     totalPayoff: number;
     gamesPlayed: number;
   }>;
   sessions: VizSession[];
   aggregates: {
     cooperationByModel: Record<string, number>;
-    cooperationByKnowledge: Record<string, number>;
+    cooperationByPriming: Record<string, number>;
     cooperationByStake: Record<number, number>;
     cooperationByRound: Array<{ round: number; rate: number; n: number }>;
     ultimatumOffers: number[];
@@ -106,7 +106,7 @@ export function exportForVisualization(dbPath: string, experimentId: string, out
         agentId: pid,
         name: agent?.name || 'unknown',
         model: agent?.model || 'unknown',
-        knowledgeLevel: agent?.knowledgeLevel || 'unknown',
+        primingCondition: agent?.primingCondition || 'unknown',
       };
     });
 
@@ -138,13 +138,13 @@ export function exportForVisualization(dbPath: string, experimentId: string, out
     cooperationByModel[model] = modelDecisions.length > 0 ? coopCount / modelDecisions.length : 0;
   }
 
-  // Cooperation by knowledge level
-  const cooperationByKnowledge: Record<string, number> = {};
-  for (const level of ['naive', 'basic', 'expert']) {
-    const levelAgentIds = agents.filter(a => a.knowledgeLevel === level).map(a => a.id);
-    const levelDecisions = pdDecisions.filter(d => levelAgentIds.includes(d.agentId));
-    const coopCount = levelDecisions.filter(d => d.action === 'cooperate').length;
-    cooperationByKnowledge[level] = levelDecisions.length > 0 ? coopCount / levelDecisions.length : 0;
+  // Cooperation by priming condition
+  const cooperationByPriming: Record<string, number> = {};
+  for (const condition of ['neutral', 'self-interest', 'cooperative']) {
+    const conditionAgentIds = agents.filter(a => a.primingCondition === condition).map(a => a.id);
+    const conditionDecisions = pdDecisions.filter(d => conditionAgentIds.includes(d.agentId));
+    const coopCount = conditionDecisions.filter(d => d.action === 'cooperate').length;
+    cooperationByPriming[condition] = conditionDecisions.length > 0 ? coopCount / conditionDecisions.length : 0;
   }
 
   // Cooperation by stake
@@ -187,7 +187,7 @@ export function exportForVisualization(dbPath: string, experimentId: string, out
       id: agent.id,
       name: agent.name,
       model: agent.model,
-      knowledgeLevel: agent.knowledgeLevel,
+      primingCondition: agent.primingCondition,
       totalPayoff,
       gamesPlayed,
     };
@@ -205,7 +205,7 @@ export function exportForVisualization(dbPath: string, experimentId: string, out
     sessions: vizSessions,
     aggregates: {
       cooperationByModel,
-      cooperationByKnowledge,
+      cooperationByPriming,
       cooperationByStake,
       cooperationByRound,
       ultimatumOffers: extractNumbers('offer', 'ultimatum'),

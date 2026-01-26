@@ -18,7 +18,7 @@ export class TrustGame extends BaseGame {
     // Step 1: Investor decides how much to send
     const investorDecision = await this.getAgentDecision(sessionId, investor, {
       gameType: 'trust',
-      knowledgeLevel: investor.knowledgeLevel,
+      primingCondition: investor.primingCondition,
       stake: this.config.stake,
       round,
       totalRounds,
@@ -33,7 +33,7 @@ export class TrustGame extends BaseGame {
     // Step 2: Trustee decides how much to return
     const trusteeDecision = await this.getAgentDecision(sessionId, trustee, {
       gameType: 'trust',
-      knowledgeLevel: trustee.knowledgeLevel,
+      primingCondition: trustee.primingCondition,
       stake: this.config.stake,
       round,
       totalRounds,

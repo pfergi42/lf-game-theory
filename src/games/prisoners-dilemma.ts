@@ -21,7 +21,7 @@ export class PrisonersDilemma extends BaseGame {
     // Get both decisions (could parallelize, but sequential for clarity)
     const decision1 = await this.getAgentDecision(sessionId, agent1, {
       gameType: 'prisoners-dilemma',
-      knowledgeLevel: agent1.knowledgeLevel,
+      primingCondition: agent1.primingCondition,
       stake: this.config.stake,
       round,
       totalRounds,
@@ -31,7 +31,7 @@ export class PrisonersDilemma extends BaseGame {
 
     const decision2 = await this.getAgentDecision(sessionId, agent2, {
       gameType: 'prisoners-dilemma',
-      knowledgeLevel: agent2.knowledgeLevel,
+      primingCondition: agent2.primingCondition,
       stake: this.config.stake,
       round,
       totalRounds,

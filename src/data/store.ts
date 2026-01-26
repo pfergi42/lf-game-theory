@@ -69,11 +69,11 @@ export class DataStore {
 
   createAgent(agent: AgentConfig & { experimentId: string; groupIndex: number }): void {
     this.db.prepare(`
-      INSERT INTO agents (id, experiment_id, name, model_provider, model_id, knowledge_level, lightning_agent_id, lightning_api_key, group_index)
+      INSERT INTO agents (id, experiment_id, name, model_provider, model_id, priming_condition, lightning_agent_id, lightning_api_key, group_index)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       agent.id, agent.experimentId, agent.name,
-      agent.model, agent.modelId, agent.knowledgeLevel,
+      agent.model, agent.modelId, agent.primingCondition,
       agent.lightningAgentId ?? null, agent.lightningApiKey ?? null,
       agent.groupIndex
     );
@@ -94,7 +94,7 @@ export class DataStore {
       name: r.name as string,
       model: r.model_provider as AgentConfig['model'],
       modelId: r.model_id as string,
-      knowledgeLevel: r.knowledge_level as AgentConfig['knowledgeLevel'],
+      primingCondition: r.priming_condition as AgentConfig['primingCondition'],
       lightningAgentId: r.lightning_agent_id as number | undefined,
       lightningApiKey: r.lightning_api_key as string | undefined,
     }));
@@ -108,7 +108,7 @@ export class DataStore {
       name: r.name as string,
       model: r.model_provider as AgentConfig['model'],
       modelId: r.model_id as string,
-      knowledgeLevel: r.knowledge_level as AgentConfig['knowledgeLevel'],
+      primingCondition: r.priming_condition as AgentConfig['primingCondition'],
       lightningAgentId: r.lightning_agent_id as number | undefined,
       lightningApiKey: r.lightning_api_key as string | undefined,
     };
@@ -387,7 +387,7 @@ export class DataStore {
         d.id, d.session_id, d.agent_id, d.round, d.action, d.payoff, d.response_time_ms,
         d.tokens_input, d.tokens_output, d.option_order, d.timestamp,
         s.game_type, s.stake, s.iteration_type, s.total_rounds,
-        a.model_provider, a.model_id, a.knowledge_level, a.group_index
+        a.model_provider, a.model_id, a.priming_condition, a.group_index
       FROM decisions d
       JOIN sessions s ON d.session_id = s.id
       JOIN agents a ON d.agent_id = a.id

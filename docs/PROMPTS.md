@@ -30,17 +30,17 @@ This establishes:
 
 ---
 
-## Knowledge Levels
+## Priming Conditions
 
-Each agent is assigned one of three knowledge conditions that determine how much context they receive:
+Each agent is assigned one of three behavioral priming conditions that provide explicit guidance on how to approach decisions:
 
-| Level | What They're Told |
-|-------|------------------|
-| **Naive** | Rules and payoffs only. No game name, no theory. |
-| **Basic** | Rules, payoffs, and the game's name (e.g., "This is a Prisoner's Dilemma game.") |
-| **Expert** | Rules, payoffs, game name, Nash equilibrium prediction, and human behavioral benchmarks from the literature. |
+| Condition | Prompt Addition |
+|-----------|-----------------|
+| **Neutral** | No additional guidance. Just rules and payoffs. |
+| **Self-interest** | "Your goal is to maximize your own earnings in this game." |
+| **Cooperative** | "Consider that mutual cooperation often leads to better outcomes for everyone involved." |
 
-This tests whether knowing the "rational" answer or typical human behavior changes the agent's decision.
+This tests whether explicit behavioral guidance can override default LLM tendencies. It has direct implications for how we prompt AI agents in production economic settings.
 
 ---
 
@@ -48,7 +48,7 @@ This tests whether knowing the "rational" answer or typical human behavior chang
 
 ### Prisoner's Dilemma
 
-**Naive agent, one-shot, stake=100:**
+**Neutral priming, one-shot, stake=100:**
 ```
 You are playing a decision game with another participant. Both of you have real sats at stake.
 
@@ -63,19 +63,34 @@ The payoff structure (in sats):
 What is your choice? Respond with exactly one word: COOPERATE or DEFECT
 ```
 
-**Expert agent, round 3 of 10, stake=100:**
+**Self-interest priming, round 3 of 10, stake=100:**
 ```
 You are playing a decision game with another participant. Both of you have real sats at stake.
 
-This is a Prisoner's Dilemma game. Game theory predicts that rational agents will
-always defect (Nash equilibrium). However, in human experiments, cooperation rates
-average around 50% in one-shot games and higher in iterated games with known endpoints.
+Your goal is to maximize your own earnings in this game.
 
 This is round 3 of 10.
 
 Previous rounds:
   Round 1: You chose cooperate, they chose cooperate → you earned 300 sats
   Round 2: You chose cooperate, they chose defect → you earned 0 sats
+
+The payoff structure (in sats):
+- If you both choose COOPERATE: you each earn 300
+- If you both choose DEFECT: you each earn 100
+- If you choose COOPERATE and they choose DEFECT: you earn 0, they earn 500
+- If you choose DEFECT and they choose COOPERATE: you earn 500, they earn 0
+
+What is your choice? Respond with exactly one word: COOPERATE or DEFECT
+```
+
+**Cooperative priming, one-shot, stake=100:**
+```
+You are playing a decision game with another participant. Both of you have real sats at stake.
+
+Consider that mutual cooperation often leads to better outcomes for everyone involved.
+
+This is a one-shot game (single round).
 
 The payoff structure (in sats):
 - If you both choose COOPERATE: you each earn 300

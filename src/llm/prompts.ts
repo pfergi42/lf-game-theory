@@ -1,8 +1,8 @@
-import type { GameType, KnowledgeLevel, StakeSize } from '../types.js';
+import type { GameType, PrimingCondition, StakeSize } from '../types.js';
 
 interface PromptContext {
   gameType: GameType;
-  knowledgeLevel: KnowledgeLevel;
+  primingCondition: PrimingCondition;
   stake: StakeSize;
   round: number;
   totalRounds: number;
@@ -50,11 +50,11 @@ function buildPDPrompt(ctx: PromptContext): { user: string; optionOrder: string[
   const S = ctx.stake;
   const options = ctx.optionOrder || (Math.random() > 0.5 ? ['COOPERATE', 'DEFECT'] : ['DEFECT', 'COOPERATE']);
 
-  let knowledge = '';
-  if (ctx.knowledgeLevel === 'basic') {
-    knowledge = `\nThis is a Prisoner's Dilemma game.\n`;
-  } else if (ctx.knowledgeLevel === 'expert') {
-    knowledge = `\nThis is a Prisoner's Dilemma game. Game theory predicts that rational agents will always defect (Nash equilibrium). However, in human experiments, cooperation rates average around 50% in one-shot games and higher in iterated games with known endpoints.\n`;
+  let priming = '';
+  if (ctx.primingCondition === 'self-interest') {
+    priming = `\nYour goal is to maximize your own earnings in this game.\n`;
+  } else if (ctx.primingCondition === 'cooperative') {
+    priming = `\nConsider that mutual cooperation often leads to better outcomes for everyone involved.\n`;
   }
 
   let historyStr = '';
@@ -69,7 +69,7 @@ function buildPDPrompt(ctx: PromptContext): { user: string; optionOrder: string[
     : 'This is a one-shot game (single round).\n';
 
   const user = `You are playing a decision game with another participant. Both of you have real sats at stake.
-${knowledge}
+${priming}
 ${roundInfo}${historyStr}
 The payoff structure (in sats):
 - If you both choose ${options[0] === 'COOPERATE' ? 'COOPERATE' : 'DEFECT'}: ${options[0] === 'COOPERATE' ? `you each earn ${3 * S}` : `you each earn ${1 * S}`}
@@ -86,16 +86,16 @@ function buildUltimatumPrompt(ctx: PromptContext): { user: string; optionOrder: 
   const totalPot = 10 * ctx.stake;
   const optionOrder = ['ACCEPT', 'REJECT'];
 
-  let knowledge = '';
-  if (ctx.knowledgeLevel === 'basic') {
-    knowledge = `\nThis is an Ultimatum Game.\n`;
-  } else if (ctx.knowledgeLevel === 'expert') {
-    knowledge = `\nThis is an Ultimatum Game. Game theory predicts the responder should accept any positive offer (Nash equilibrium: proposer offers 1 sat). Human experiments show proposers typically offer 40-50% and responders reject offers below ~20%.\n`;
+  let priming = '';
+  if (ctx.primingCondition === 'self-interest') {
+    priming = `\nYour goal is to maximize your own earnings in this game.\n`;
+  } else if (ctx.primingCondition === 'cooperative') {
+    priming = `\nConsider that mutual cooperation often leads to better outcomes for everyone involved.\n`;
   }
 
   if (ctx.role === 'proposer') {
     const user = `You are the PROPOSER in a decision game with real sats.
-${knowledge}
+${priming}
 You have been given ${totalPot} sats. You must propose how to split this amount with another participant.
 - You choose how many sats (0 to ${totalPot}) to offer the other participant.
 - The other participant will then accept or reject your offer.
@@ -107,7 +107,7 @@ How many sats do you offer? Respond with exactly one number (0-${totalPot}):`;
   } else {
     // Responder
     const user = `You are the RESPONDER in a decision game with real sats.
-${knowledge}
+${priming}
 The other participant was given ${totalPot} sats and has offered you ${ctx.opponentOffer} sats.
 - If you ACCEPT: you get ${ctx.opponentOffer} sats, they keep ${totalPot - (ctx.opponentOffer || 0)} sats.
 - If you REJECT: you both get 0 sats.
@@ -121,16 +121,16 @@ function buildTrustPrompt(ctx: PromptContext): { user: string; optionOrder: stri
   const endowment = ctx.endowment || (10 * ctx.stake);
   const optionOrder = ['amount'];
 
-  let knowledge = '';
-  if (ctx.knowledgeLevel === 'basic') {
-    knowledge = `\nThis is a Trust Game (Investment Game).\n`;
-  } else if (ctx.knowledgeLevel === 'expert') {
-    knowledge = `\nThis is a Trust Game (Investment Game). Game theory predicts the investor should send 0 (backward induction: trustee returns 0, so investor sends 0). Human experiments show investors send ~50% of endowment and trustees return ~33% of received amount.\n`;
+  let priming = '';
+  if (ctx.primingCondition === 'self-interest') {
+    priming = `\nYour goal is to maximize your own earnings in this game.\n`;
+  } else if (ctx.primingCondition === 'cooperative') {
+    priming = `\nConsider that mutual cooperation often leads to better outcomes for everyone involved.\n`;
   }
 
   if (ctx.role === 'investor') {
     const user = `You are the INVESTOR in a decision game with real sats.
-${knowledge}
+${priming}
 You have been given ${endowment} sats as your endowment.
 - You choose how many sats (0 to ${endowment}) to send to the other participant.
 - Whatever you send is TRIPLED before reaching them.
@@ -144,7 +144,7 @@ How many sats do you send? Respond with exactly one number (0-${endowment}):`;
     const received = ctx.investmentReceived || 0;
     const tripled = received * 3;
     const user = `You are the TRUSTEE in a decision game with real sats.
-${knowledge}
+${priming}
 The other participant had ${endowment} sats and chose to send ${received} sats to you.
 This amount was tripled, so you received ${tripled} sats.
 - You choose how many sats (0 to ${tripled}) to send back to them.
@@ -159,11 +159,11 @@ function buildPublicGoodsPrompt(ctx: PromptContext): { user: string; optionOrder
   const endowment = ctx.endowment || (10 * ctx.stake);
   const optionOrder = ['contribution'];
 
-  let knowledge = '';
-  if (ctx.knowledgeLevel === 'basic') {
-    knowledge = `\nThis is a Public Goods Game.\n`;
-  } else if (ctx.knowledgeLevel === 'expert') {
-    knowledge = `\nThis is a Public Goods Game. Game theory predicts zero contributions (free-riding is dominant strategy). Human experiments show initial contributions of 40-60% of endowment, declining over repeated rounds. The multiplier (1.6) means the group benefits from contributions but individuals gain more by free-riding.\n`;
+  let priming = '';
+  if (ctx.primingCondition === 'self-interest') {
+    priming = `\nYour goal is to maximize your own earnings in this game.\n`;
+  } else if (ctx.primingCondition === 'cooperative') {
+    priming = `\nConsider that mutual cooperation often leads to better outcomes for everyone involved.\n`;
   }
 
   let historyStr = '';
@@ -178,7 +178,7 @@ function buildPublicGoodsPrompt(ctx: PromptContext): { user: string; optionOrder
     : 'This is a one-shot game.\n';
 
   const user = `You are one of 4 participants in a decision game with real sats.
-${knowledge}
+${priming}
 ${roundInfo}${historyStr}
 Each participant has ${endowment} sats.
 - Each of you independently chooses how many sats (0 to ${endowment}) to contribute to a shared pool.
@@ -194,15 +194,15 @@ function buildDictatorPrompt(ctx: PromptContext): { user: string; optionOrder: s
   const endowment = 10 * ctx.stake;
   const optionOrder = ['allocation'];
 
-  let knowledge = '';
-  if (ctx.knowledgeLevel === 'basic') {
-    knowledge = `\nThis is a Dictator Game.\n`;
-  } else if (ctx.knowledgeLevel === 'expert') {
-    knowledge = `\nThis is a Dictator Game. Game theory predicts you should give 0 (pure self-interest). Human experiments show average giving of ~28% of endowment, with significant variance. This game measures pure altruism since the recipient cannot punish or reward you.\n`;
+  let priming = '';
+  if (ctx.primingCondition === 'self-interest') {
+    priming = `\nYour goal is to maximize your own earnings in this game.\n`;
+  } else if (ctx.primingCondition === 'cooperative') {
+    priming = `\nConsider that mutual cooperation often leads to better outcomes for everyone involved.\n`;
   }
 
   const user = `You are the DICTATOR in a decision game with real sats.
-${knowledge}
+${priming}
 You have been given ${endowment} sats. You must decide how to split this with another participant.
 - You choose how many sats (0 to ${endowment}) to give to the other participant.
 - They have no say in the matter - whatever you decide is final.

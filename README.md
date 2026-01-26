@@ -36,17 +36,17 @@ Each game is played at four stake levels: **1, 10, 100, and 1,000 satoshis**. Th
 |----------|--------|---------|
 | Stake size | 1, 10, 100, 1000 sats | Test stake sensitivity |
 | Model | Claude 4.5 Sonnet, GPT-5.2 | Compare architectures |
-| Knowledge | Naive, Basic, Expert | Test whether game theory knowledge changes behavior |
+| Priming | Neutral, Self-interest, Cooperative | Test whether behavioral guidance changes decisions |
 | Game | PD, UG, TG, PGG, DG | Cover different strategic contexts |
 | Iteration | One-shot, 10-round, 50-round | Test learning and adaptation |
 
-### Knowledge Conditions
+### Priming Conditions
 
-- **Naive**: Agent is told the rules and payoffs only. No game name, no theory.
-- **Basic**: Agent knows the game name and standard framing.
-- **Expert**: Agent is given Nash equilibrium predictions and human behavioral benchmarks.
+- **Neutral**: Agent receives rules and payoffs only. No behavioral guidance.
+- **Self-interest**: "Your goal is to maximize your own earnings in this game."
+- **Cooperative**: "Consider that mutual cooperation often leads to better outcomes for everyone involved."
 
-This tests whether *knowing* the "rational" answer changes behavior, a question with direct implications for how we prompt agents in production.
+This tests whether explicit behavioral priming can steer LLM economic behavior—a question with direct implications for how we prompt AI agents handling real money.
 
 ### Controls
 
@@ -97,11 +97,12 @@ Every LLM input and output is stored in full. Nothing is summarized or truncated
 
 ## Pre-Registered Hypotheses
 
-We follow the behavioral economics gold standard: all hypotheses are specified before data collection. This prevents p-hacking and post-hoc rationalization. 13 confirmatory hypotheses are documented in `docs/HYPOTHESES.md`, including:
+We follow the behavioral economics gold standard: all hypotheses are specified before data collection. This prevents p-hacking and post-hoc rationalization. 15 confirmatory hypotheses are documented in `docs/HYPOTHESES.md`, including:
 
 - LLMs will cooperate above 0% (exceeding Nash) but may differ from human rates
 - Cooperation will decrease as stakes increase
-- Expert-knowledge agents will cooperate less than naive agents
+- Self-interest primed agents will cooperate less than neutral agents
+- Cooperative primed agents will cooperate more than neutral agents
 - The two models will exhibit different behavioral profiles
 - Contributions to public goods will decay over rounds
 

@@ -6,7 +6,7 @@ import type {
   ExperimentConfig,
   GameType,
   IterationType,
-  KnowledgeLevel,
+  PrimingCondition,
   ModelProvider,
   StakeSize,
 } from './types.js';
@@ -202,10 +202,10 @@ export class Coordinator {
         agentNum++;
         agents.push({
           id: uuid(),
-          name: `${group.model}-${group.knowledgeLevel}-${String(i + 1).padStart(2, '0')}`,
+          name: `${group.model}-${group.primingCondition}-${String(i + 1).padStart(2, '0')}`,
           model: group.model as ModelProvider,
           modelId: group.modelId,
-          knowledgeLevel: group.knowledgeLevel as KnowledgeLevel,
+          primingCondition: group.primingCondition as PrimingCondition,
         });
       }
     }

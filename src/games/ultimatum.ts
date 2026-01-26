@@ -18,7 +18,7 @@ export class UltimatumGame extends BaseGame {
     // Step 1: Proposer makes offer
     const proposerDecision = await this.getAgentDecision(sessionId, proposer, {
       gameType: 'ultimatum',
-      knowledgeLevel: proposer.knowledgeLevel,
+      primingCondition: proposer.primingCondition,
       stake: this.config.stake,
       round,
       totalRounds,
@@ -33,7 +33,7 @@ export class UltimatumGame extends BaseGame {
     // Step 2: Responder accepts or rejects
     const responderDecision = await this.getAgentDecision(sessionId, responder, {
       gameType: 'ultimatum',
-      knowledgeLevel: responder.knowledgeLevel,
+      primingCondition: responder.primingCondition,
       stake: this.config.stake,
       round,
       totalRounds,

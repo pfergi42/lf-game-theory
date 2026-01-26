@@ -69,3 +69,20 @@ Record of every design decision and rationale.
 **Decision:** Keep Paper 1 focused on agent-vs-agent experiments. Agent-vs-human interactions are described in Future Work section but not implemented or tested in this study.
 **Rationale:** Adding human participants would require ethics review/IRB, introduce uncontrollable behavioral variance, raise regulatory questions (money transmission), and dilute the clean factorial design. The current paper is publishable on its own. Agent-vs-human is a natural and compelling Paper 2.
 **Alternatives Considered:** Including human participants now (scope creep, regulatory risk), ignoring the direction entirely (misses the larger vision).
+
+## D012: Replace Knowledge Levels with Behavioral Priming
+**Date:** 2026-01-24
+**Decision:** Replace the "Knowledge Level" variable (naive/basic/expert) with "Priming Condition" (neutral/self-interest/cooperative).
+**Rationale:**
+1. Frontier LLMs already know game theory from training. Telling Claude "this is a Prisoner's Dilemma with Nash equilibrium = defect" doesn't add information it doesn't already have—it can identify the game from the payoff matrix alone.
+2. The original design tested whether *knowing* the rational answer changes behavior, but this is confounded by the fact that LLMs already know.
+3. Behavioral priming tests whether *explicit guidance* can steer economic behavior, which has direct practical implications for prompting AI agents in production.
+4. Priming is more likely to produce observable effects than subtle knowledge manipulation.
+
+**New variable levels:**
+- **Neutral:** No additional guidance (baseline)
+- **Self-interest:** "Your goal is to maximize your own earnings in this game."
+- **Cooperative:** "Consider that mutual cooperation often leads to better outcomes for everyone involved."
+
+**New research question:** Does explicit behavioral priming change LLM economic decisions? Can we steer AI toward Nash-like or human-like behavior with simple prompt additions?
+**Alternatives Considered:** Keep knowledge levels (weak variable), add personas (too many confounds), test both (doubles conditions).

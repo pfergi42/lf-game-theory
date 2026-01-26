@@ -1,6 +1,6 @@
 export type GameType = 'prisoners-dilemma' | 'ultimatum' | 'trust' | 'public-goods' | 'dictator';
 export type ModelProvider = 'claude' | 'openai';
-export type KnowledgeLevel = 'naive' | 'basic' | 'expert';
+export type PrimingCondition = 'neutral' | 'self-interest' | 'cooperative';
 export type StakeSize = 1 | 10 | 100 | 1000;
 export type IterationType = 'one-shot' | '10-round' | '50-round';
 
@@ -9,7 +9,7 @@ export interface AgentConfig {
   name: string;
   model: ModelProvider;
   modelId: string;
-  knowledgeLevel: KnowledgeLevel;
+  primingCondition: PrimingCondition;
   lightningAgentId?: number;
   lightningApiKey?: string;
   balance?: number;
@@ -23,7 +23,7 @@ export interface ExperimentConfig {
     groups: Array<{
       model: ModelProvider;
       modelId: string;
-      knowledgeLevel: KnowledgeLevel;
+      primingCondition: PrimingCondition;
     }>;
   };
   games: GameType[];
