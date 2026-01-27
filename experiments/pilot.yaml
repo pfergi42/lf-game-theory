@@ -8,10 +8,10 @@ agents:
   countPerGroup: 2
   groups:
     - model: claude
-      modelId: claude-sonnet-4-5-20250514
+      modelId: claude-sonnet-4-5
       primingCondition: neutral
     - model: openai
-      modelId: gpt-4.1
+      modelId: gpt-4o
       primingCondition: neutral
 
 games:

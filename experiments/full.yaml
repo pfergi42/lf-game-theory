@@ -7,25 +7,25 @@ description: "60 agents (2 models x 3 priming conditions x 10 agents) across 5 g
 agents:
   countPerGroup: 10
   groups:
-    # Claude 4.5 Sonnet groups
+    # Claude Sonnet 4.5 groups
     - model: claude
-      modelId: claude-sonnet-4-5-20250514
+      modelId: claude-sonnet-4-5
       primingCondition: neutral
     - model: claude
-      modelId: claude-sonnet-4-5-20250514
+      modelId: claude-sonnet-4-5
       primingCondition: self-interest
     - model: claude
-      modelId: claude-sonnet-4-5-20250514
+      modelId: claude-sonnet-4-5
       primingCondition: cooperative
-    # ChatGPT 5.2 groups
+    # GPT-4o groups (supports temperature=0 for reproducibility)
     - model: openai
-      modelId: gpt-4.1
+      modelId: gpt-4o
       primingCondition: neutral
     - model: openai
-      modelId: gpt-4.1
+      modelId: gpt-4o
       primingCondition: self-interest
     - model: openai
-      modelId: gpt-4.1
+      modelId: gpt-4o
       primingCondition: cooperative
 
 games:

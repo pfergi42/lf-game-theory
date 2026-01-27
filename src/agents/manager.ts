@@ -1,20 +1,20 @@
 import type { AgentConfig } from '../types.js';
 
-const API_BASE = 'https://lightningfaucet.com/api/v1';
+const API_URL = 'https://lightningfaucet.com/api/';
 
 interface LFAgent {
   id: number;
   name: string;
   api_key: string;
-  balance: number;
+  balance_sats: number;
   budget_limit_sats?: number;
-  status: string;
+  is_active: number;
 }
 
-interface LFResponse<T = unknown> {
+interface LFResponse {
   success: boolean;
-  data?: T;
   error?: string;
+  [key: string]: unknown;
 }
 
 export class AgentManager {
@@ -25,73 +25,89 @@ export class AgentManager {
     this.operatorKey = operatorKey;
   }
 
-  private async request<T>(
-    endpoint: string,
-    method: string = 'GET',
-    body?: Record<string, unknown>,
+  private async request(
+    action: string,
+    params: Record<string, unknown> = {},
     apiKey?: string
-  ): Promise<T> {
+  ): Promise<LFResponse> {
     const key = apiKey || this.operatorKey;
-    const options: RequestInit = {
-      method,
+
+    const body = {
+      action,
+      api_key: key,
+      ...params,
+    };
+
+    const response = await fetch(API_URL, {
+      method: 'POST',
       headers: {
-        'Authorization': `Bearer ${key}`,
         'Content-Type': 'application/json',
       },
-    };
-    if (body) {
-      options.body = JSON.stringify(body);
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json() as LFResponse;
+
+    if (!data.success) {
+      throw new Error(`Lightning Faucet API error: ${data.error || 'Unknown error'}`);
     }
 
-    const response = await fetch(`${API_BASE}${endpoint}`, options);
-    const data = await response.json() as LFResponse<T>;
-
-    if (!response.ok || !data.success) {
-      throw new Error(`Lightning Faucet API error: ${data.error || response.statusText}`);
-    }
-
-    return data.data as T;
+    return data;
   }
 
   async checkOperatorBalance(): Promise<number> {
-    const result = await this.request<{ balance: number }>('/balance');
-    return result.balance;
+    const result = await this.request('whoami');
+    return result.balance_sats as number;
   }
 
-  async createLightningAgent(name: string, budgetLimit?: number): Promise<LFAgent> {
-    const body: Record<string, unknown> = { name };
+  async createLightningAgent(name: string, budgetLimit?: number): Promise<{ id: number; apiKey: string }> {
+    const params: Record<string, unknown> = { name };
     if (budgetLimit !== undefined) {
-      body.budget_limit_sats = budgetLimit;
+      params.budget_limit_sats = budgetLimit;
     }
-    return this.request<LFAgent>('/agents', 'POST', body);
+
+    const result = await this.request('create_agent', params);
+
+    return {
+      id: result.agent_id as number,
+      apiKey: result.api_key as string,
+    };
   }
 
   async fundAgent(agentId: number, amountSats: number): Promise<void> {
-    await this.request('/agents/fund', 'POST', {
+    await this.request('fund_agent', {
       agent_id: agentId,
       amount_sats: amountSats,
     });
   }
 
   async sweepAgent(agentId: number, amountSats: number): Promise<void> {
-    await this.request('/agents/sweep', 'POST', {
+    await this.request('withdraw_from_agent', {
       agent_id: agentId,
       amount_sats: amountSats,
     });
   }
 
   async getAgentBalance(agentId: number): Promise<number> {
-    const agents = await this.request<LFAgent[]>('/agents');
+    const agents = await this.listAgents();
     const agent = agents.find(a => a.id === agentId);
-    return agent?.balance ?? 0;
+    return agent?.balance_sats ?? 0;
   }
 
   async listAgents(): Promise<LFAgent[]> {
-    return this.request<LFAgent[]>('/agents');
+    const result = await this.request('list_agents');
+    return (result.agents || []) as LFAgent[];
+  }
+
+  async deleteAgent(agentId: number): Promise<void> {
+    await this.request('delete_agent', {
+      agent_id: agentId,
+      confirm: true,
+    });
   }
 
   async transferBetweenAgents(fromAgentId: number, toAgentId: number, amount: number): Promise<void> {
-    await this.request('/agents/transfer', 'POST', {
+    await this.request('transfer_to_agent', {
       from_agent_id: fromAgentId,
       to_agent_id: toAgentId,
       amount_sats: amount,
@@ -99,14 +115,16 @@ export class AgentManager {
   }
 
   async setBudget(agentId: number, budgetLimitSats: number): Promise<void> {
-    await this.request('/agents/budget', 'POST', {
+    await this.request('set_budget', {
       agent_id: agentId,
       budget_limit_sats: budgetLimitSats,
     });
   }
 
   async deactivateAgent(agentId: number): Promise<void> {
-    await this.request(`/agents/${agentId}/deactivate`, 'POST');
+    await this.request('deactivate_agent', {
+      agent_id: agentId,
+    });
   }
 
   // --- High-level experiment operations ---
@@ -119,16 +137,16 @@ export class AgentManager {
 
     for (const agent of agents) {
       try {
+        // No budget limit for experiment agents - we manage balances directly
         const lfAgent = await this.createLightningAgent(
-          `exp-${agent.id.slice(0, 8)}-${agent.name}`,
-          fundingPerAgent * 2 // budget = 2x initial funding
+          `exp-${agent.id.slice(0, 8)}-${agent.name}`
         );
 
         await this.fundAgent(lfAgent.id, fundingPerAgent);
 
         this.agents.set(agent.id, {
           lightningId: lfAgent.id,
-          apiKey: lfAgent.api_key,
+          apiKey: lfAgent.apiKey,
         });
 
         console.log(`  Created agent ${agent.name}: LN#${lfAgent.id}, funded ${fundingPerAgent} sats`);
@@ -154,10 +172,19 @@ export class AgentManager {
       const currentBalance = await this.getAgentBalance(lnInfo.lightningId);
       const diff = currentBalance - targetBalance;
 
-      if (diff > 0) {
-        await this.sweepAgent(lnInfo.lightningId, diff);
-      } else if (diff < 0) {
-        await this.fundAgent(lnInfo.lightningId, Math.abs(diff));
+      // Skip small differences (within 10% of target)
+      if (Math.abs(diff) < targetBalance * 0.1) {
+        continue;
+      }
+
+      try {
+        if (diff > 0) {
+          await this.sweepAgent(lnInfo.lightningId, diff);
+        } else if (diff < 0) {
+          await this.fundAgent(lnInfo.lightningId, Math.abs(diff));
+        }
+      } catch (err) {
+        console.warn(`  Rebalance skipped for agent ${agent.name}: ${err instanceof Error ? err.message : 'unknown'}`);
       }
 
       await sleep(100);

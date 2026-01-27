@@ -34,9 +34,29 @@ export class OperatorPool {
   }
 
   async recoverAll(agents: AgentConfig[]): Promise<number> {
-    const recovered = await this.manager.sweepAllAgents();
-    this.totalRecovered += recovered;
-    return recovered;
+    console.log(`Sweeping balances from ${agents.length} agents back to operator...`);
+    let totalSwept = 0;
+
+    for (const agent of agents) {
+      const lnInfo = this.manager.getLightningInfo(agent.id);
+      if (!lnInfo) continue;
+
+      try {
+        const balance = await this.manager.getAgentBalance(lnInfo.lightningId);
+        if (balance > 0) {
+          await this.manager.sweepAgent(lnInfo.lightningId, balance);
+          totalSwept += balance;
+          console.log(`  Swept ${balance} sats from ${agent.name}`);
+        }
+      } catch (err) {
+        console.error(`  Failed to sweep ${agent.name}:`, err instanceof Error ? err.message : 'unknown');
+      }
+      await sleep(100);
+    }
+
+    this.totalRecovered += totalSwept;
+    console.log(`Total swept: ${totalSwept} sats`);
+    return totalSwept;
   }
 
   async getReconciliation(agents: AgentConfig[]): Promise<{

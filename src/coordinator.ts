@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config({ override: true });
 import { readFileSync } from 'fs';
 import { parse as parseYaml } from 'yaml';
 import { v4 as uuid } from 'uuid';
@@ -31,13 +33,15 @@ export class Coordinator {
   private llm: LLMRouter;
   private agents: AgentConfig[] = [];
   private experimentId: string = '';
+  private fundingPerAgent: number = 0;
 
   constructor(configPath: string) {
     const configYaml = readFileSync(configPath, 'utf-8');
     this.config = parseYaml(configYaml) as ExperimentConfig;
     this.store = new DataStore(`${this.config.name.replace(/\s+/g, '-').toLowerCase()}.db`);
     this.agentManager = new AgentManager(process.env.LF_OPERATOR_KEY || '');
-    this.pool = new OperatorPool(this.agentManager, 1_000_000);
+    // Pool will be initialized in setup() after checking actual balance
+    this.pool = null as unknown as OperatorPool;
     this.llm = new LLMRouter();
   }
 
@@ -67,12 +71,29 @@ export class Coordinator {
       configYaml
     );
 
-    // Verify operator balance
-    const { balance, sufficient } = await this.pool.verifyOperatorBalance();
-    console.log(`Operator balance: ${balance} sats (${sufficient ? 'sufficient' : 'INSUFFICIENT'})`);
-    if (!sufficient) {
-      throw new Error('Insufficient operator balance');
+    // Check actual operator balance
+    const actualBalance = await this.agentManager.checkOperatorBalance();
+    console.log(`Operator balance: ${actualBalance} sats`);
+
+    // Calculate minimum required balance based on experiment config
+    const numAgents = this.config.agents.groups.length * this.config.agents.countPerGroup;
+    const maxStake = Math.max(...this.config.stakes);
+    const maxRounds = Math.max(...this.config.iterations.map(i => {
+      const match = i.match(/(\d+)/);
+      return match ? parseInt(match[1]) : 1;
+    }));
+    const minPerAgent = maxStake * maxRounds * 10; // 10x buffer per agent
+    const minRequired = numAgents * minPerAgent;
+
+    console.log(`Agents: ${numAgents}, Max stake: ${maxStake}, Max rounds: ${maxRounds}`);
+    console.log(`Minimum required: ${minRequired} sats (${minPerAgent} per agent)`);
+
+    if (actualBalance < minRequired) {
+      throw new Error(`Insufficient balance: have ${actualBalance} sats, need ${minRequired} sats`);
     }
+
+    // Initialize pool with actual balance
+    this.pool = new OperatorPool(this.agentManager, actualBalance);
 
     // Create agents
     this.agents = this.createAgentConfigs();
@@ -88,9 +109,10 @@ export class Coordinator {
       });
     }
 
-    // Create Lightning wallets
-    const fundingPerAgent = Math.floor(900_000 / this.agents.length); // Leave 100k buffer
-    await this.agentManager.setupExperimentAgents(this.agents, fundingPerAgent);
+    // Create Lightning wallets - use 80% of balance, keep 20% buffer
+    this.fundingPerAgent = Math.floor((actualBalance * 0.8) / this.agents.length);
+    console.log(`Funding per agent: ${this.fundingPerAgent} sats`);
+    await this.agentManager.setupExperimentAgents(this.agents, this.fundingPerAgent);
 
     // Update agent records with Lightning IDs
     for (const agent of this.agents) {
@@ -149,8 +171,7 @@ export class Coordinator {
       }
 
       // Rebalance between conditions
-      const targetBalance = Math.floor(900_000 / this.agents.length);
-      await this.agentManager.rebalanceAgents(this.agents, targetBalance);
+      await this.agentManager.rebalanceAgents(this.agents, this.fundingPerAgent);
 
       // Log progress
       const state = this.store.getExperimentState(this.experimentId);

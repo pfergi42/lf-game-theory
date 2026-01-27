@@ -82,10 +82,13 @@ export class LLMRouter {
     }
     messages.push({ role: 'user', content: request.prompt });
 
+    // GPT-5 reasoning models don't support temperature=0 or return content normally
+    // For reproducibility with other models, we use seed parameter
     const response = await this.openai.chat.completions.create({
       model: request.modelId,
       max_tokens: request.maxTokens,
       temperature: request.temperature,
+      seed: 42,
       messages,
     });
 
