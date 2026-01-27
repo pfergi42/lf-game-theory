@@ -1,0 +1,31 @@
+# Priming Condition Comparison
+# 6 agents testing all 3 priming conditions with Claude only (to control for model effects)
+
+name: "Priming Comparison - Claude Only"
+description: "6-agent test comparing neutral, self-interest, and cooperative priming on PD 10-round"
+
+agents:
+  countPerGroup: 2
+  groups:
+    - model: claude
+      modelId: claude-sonnet-4-5
+      primingCondition: neutral
+    - model: claude
+      modelId: claude-sonnet-4-5
+      primingCondition: self-interest
+    - model: claude
+      modelId: claude-sonnet-4-5
+      primingCondition: cooperative
+
+games:
+  - prisoners-dilemma
+
+stakes:
+  - 10
+
+iterations:
+  - 10-round
+
+temperature: 0
+randomizeOptionOrder: true
+counterbalanceGameOrder: false
