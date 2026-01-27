@@ -10,6 +10,8 @@
     "pilot": "node dist/coordinator.js --config experiments/pilot.yaml",
     "priming-test": "node dist/coordinator.js --config experiments/priming-test.yaml",
     "full": "node dist/coordinator.js --config experiments/full.yaml",
+    "arena:pilot": "node dist/arena/coordinator.js --config experiments/arena-pilot.yaml",
+    "arena:full": "node dist/arena/coordinator.js --config experiments/arena-full.yaml",
     "db:init": "node dist/data/init-db.js",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit"

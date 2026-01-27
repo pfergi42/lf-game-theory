@@ -1,0 +1,29 @@
+# Arena Pilot: 4-agent test run
+# Purpose: Validate transfer mechanics, message routing, and agent behavior
+# before running the full 16-agent experiment.
+
+name: "Arena Pilot - 4 Agents"
+description: "Small-scale test of multi-agent economic arena with 2 Claude and 2 GPT agents competing over 20 rounds with real Bitcoin stakes."
+
+totalRounds: 20
+startingBalance: 1000
+
+agents:
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250514
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+
+rules:
+  maxTransfersPerRound: 1
+  maxPrivateMessagesPerRound: 2
+  maxBroadcastsPerRound: 1
+  minTransferAmount: 1
+  announceFinalRound: true
+
+temperature: 0.7
+revealModelType: false
+publicMessageHistory: 5
+privateMessageHistory: 3

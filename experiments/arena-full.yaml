@@ -1,0 +1,29 @@
+# Arena Full: 16-agent economic simulation
+# Research question: Do LLM agents form coalitions, develop strategies,
+# or exhibit emergent economic behaviors when competing with real Bitcoin?
+
+name: "Arena Full - 16 Agents"
+description: "Full multi-agent economic arena with 8 Claude and 8 GPT-4o agents competing over 100 rounds with real Bitcoin stakes. Anonymous identities, private balances, free-form negotiation."
+
+totalRounds: 100
+startingBalance: 1000
+
+agents:
+  - count: 8
+    model: claude
+    modelId: claude-sonnet-4-5-20250514
+  - count: 8
+    model: openai
+    modelId: gpt-4o
+
+rules:
+  maxTransfersPerRound: 1
+  maxPrivateMessagesPerRound: 2
+  maxBroadcastsPerRound: 1
+  minTransferAmount: 1
+  announceFinalRound: true
+
+temperature: 0.7
+revealModelType: false
+publicMessageHistory: 5
+privateMessageHistory: 3

@@ -379,6 +379,167 @@ export class DataStore {
     };
   }
 
+  // --- Arena: Rounds ---
+
+  recordArenaRound(
+    experimentId: string,
+    roundNumber: number,
+    summary: { transferCount: number; messageCount: number; eliminatedCount: number }
+  ): string {
+    const id = uuid();
+    this.db.prepare(`
+      INSERT INTO arena_rounds (id, experiment_id, round_number, transfer_count, message_count, eliminated_count, summary)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      id, experimentId, roundNumber,
+      summary.transferCount, summary.messageCount, summary.eliminatedCount,
+      JSON.stringify(summary)
+    );
+    return id;
+  }
+
+  // --- Arena: Messages ---
+
+  recordArenaMessage(experimentId: string, message: {
+    id: string;
+    round: number;
+    fromAgentId: string;
+    fromName: string;
+    toAgentId: string | null;
+    toName: string | null;
+    content: string;
+    type: string;
+  }): void {
+    this.db.prepare(`
+      INSERT INTO arena_messages (id, experiment_id, round, from_agent_id, from_name, to_agent_id, to_name, content, message_type)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      message.id, experimentId, message.round,
+      message.fromAgentId, message.fromName,
+      message.toAgentId, message.toName,
+      message.content, message.type
+    );
+  }
+
+  getArenaMessages(experimentId: string, round?: number, type?: string): Array<Record<string, unknown>> {
+    let query = `SELECT * FROM arena_messages WHERE experiment_id = ?`;
+    const params: unknown[] = [experimentId];
+    if (round !== undefined) {
+      query += ` AND round = ?`;
+      params.push(round);
+    }
+    if (type) {
+      query += ` AND message_type = ?`;
+      params.push(type);
+    }
+    query += ` ORDER BY round, timestamp`;
+    return this.db.prepare(query).all(...params) as Array<Record<string, unknown>>;
+  }
+
+  // --- Arena: Transfers ---
+
+  recordArenaTransfer(experimentId: string, transfer: {
+    id: string;
+    round: number;
+    fromAgentId: string;
+    fromName: string;
+    toAgentId: string;
+    toName: string;
+    amount: number;
+    success: boolean;
+    errorMessage?: string;
+  }): void {
+    this.db.prepare(`
+      INSERT INTO arena_transfers (id, experiment_id, round, from_agent_id, from_name, to_agent_id, to_name, amount, success, error_message)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      transfer.id, experimentId, transfer.round,
+      transfer.fromAgentId, transfer.fromName,
+      transfer.toAgentId, transfer.toName,
+      transfer.amount, transfer.success ? 1 : 0,
+      transfer.errorMessage ?? null
+    );
+  }
+
+  getArenaTransfers(experimentId: string, round?: number): Array<Record<string, unknown>> {
+    let query = `SELECT * FROM arena_transfers WHERE experiment_id = ?`;
+    const params: unknown[] = [experimentId];
+    if (round !== undefined) {
+      query += ` AND round = ?`;
+      params.push(round);
+    }
+    query += ` ORDER BY round, timestamp`;
+    return this.db.prepare(query).all(...params) as Array<Record<string, unknown>>;
+  }
+
+  // --- Arena: Actions ---
+
+  recordArenaAction(experimentId: string, round: number, agentId: string, action: {
+    rawResponse: string;
+    parsedActions: unknown[];
+    prompt: string;
+    responseTimeMs: number;
+    tokensInput: number;
+    tokensOutput: number;
+  }): void {
+    const id = uuid();
+    this.db.prepare(`
+      INSERT INTO arena_actions (id, experiment_id, round, agent_id, raw_response, parsed_actions, prompt, response_time_ms, tokens_input, tokens_output)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      id, experimentId, round, agentId,
+      action.rawResponse,
+      JSON.stringify(action.parsedActions),
+      action.prompt,
+      action.responseTimeMs,
+      action.tokensInput,
+      action.tokensOutput
+    );
+  }
+
+  // --- Arena: Balances ---
+
+  recordArenaBalance(experimentId: string, round: number, agentId: string, balance: number): void {
+    this.db.prepare(`
+      INSERT INTO arena_balances (experiment_id, round, agent_id, balance)
+      VALUES (?, ?, ?, ?)
+    `).run(experimentId, round, agentId, balance);
+  }
+
+  getArenaBalanceHistory(experimentId: string, agentId?: string): Array<Record<string, unknown>> {
+    let query = `SELECT * FROM arena_balances WHERE experiment_id = ?`;
+    const params: unknown[] = [experimentId];
+    if (agentId) {
+      query += ` AND agent_id = ?`;
+      params.push(agentId);
+    }
+    query += ` ORDER BY round, agent_id`;
+    return this.db.prepare(query).all(...params) as Array<Record<string, unknown>>;
+  }
+
+  // --- Arena: Export ---
+
+  exportArenaDataCSV(experimentId: string): string {
+    const rows = this.db.prepare(`
+      SELECT
+        ab.round, ab.balance,
+        a.name as agent_name, a.model_provider, a.model_id
+      FROM arena_balances ab
+      JOIN agents a ON ab.agent_id = a.id
+      WHERE ab.experiment_id = ?
+      ORDER BY ab.round, a.name
+    `).all(experimentId) as Array<Record<string, unknown>>;
+
+    if (rows.length === 0) return '';
+
+    const headers = Object.keys(rows[0]).join(',');
+    const lines = rows.map(r => Object.values(r).map(v =>
+      typeof v === 'string' && v.includes(',') ? `"${v}"` : v ?? ''
+    ).join(','));
+
+    return [headers, ...lines].join('\n');
+  }
+
   // --- Export ---
 
   exportDecisionsCSV(experimentId: string): string {
