@@ -107,11 +107,9 @@ export class AgentManager {
   }
 
   async transferBetweenAgents(fromAgentId: number, toAgentId: number, amount: number): Promise<void> {
-    await this.request('transfer_to_agent', {
-      from_agent_id: fromAgentId,
-      to_agent_id: toAgentId,
-      amount_sats: amount,
-    });
+    // Two-step: sweep from source agent to operator, then fund destination
+    await this.sweepAgent(fromAgentId, amount);
+    await this.fundAgent(toAgentId, amount);
   }
 
   async setBudget(agentId: number, budgetLimitSats: number): Promise<void> {
