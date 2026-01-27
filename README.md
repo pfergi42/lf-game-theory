@@ -2,9 +2,9 @@
 
 **An empirical study of LLM economic behavior with real Bitcoin Lightning payments.**
 
-This project runs classic game theory experiments using AI agents that have real Bitcoin wallets. Each agent makes decisions (cooperate or defect, offer or reject, invest or hoard) and the outcomes are settled in real satoshis on the Bitcoin Lightning Network.
+This project runs two experiments using AI agents with real Bitcoin wallets. In the first, agents play classic economics games (Prisoner's Dilemma, Ultimatum, Trust, Public Goods, Dictator) where outcomes are settled in real satoshis. In the second, 16 agents are dropped into a free-form economic arena where they can transfer money, negotiate, form alliances, and betray each other — all with real Bitcoin on the line.
 
-The core question: **does giving AI agents real money change how they behave?**
+The core questions: **does giving AI agents real money change how they behave? And when left to their own devices, do they cooperate, compete, or form factions?**
 
 ## Why This Matters
 
@@ -108,6 +108,61 @@ We follow the behavioral economics gold standard: all hypotheses are specified b
 
 When you test many hypotheses at once, you're more likely to find false positives by chance alone. We use a statistical correction (Bonferroni) that makes the bar for "significant" higher—requiring stronger evidence before we claim a real effect. With 15 hypotheses, we use α = 0.0038 instead of the usual 0.05.
 
+## Experiment 2: AI Economic Arena
+
+The structured games above test specific strategic scenarios. The arena goes further: **what happens when you give LLM agents real money and no rules?**
+
+### Design
+
+16 AI agents (8 Claude, 8 GPT-4o) each start with 1,000 sats in a real Lightning wallet. Over 100 rounds, they can:
+
+- **Transfer** sats to any other agent
+- **Send private messages** to specific agents
+- **Broadcast** public messages to everyone
+- **Pass** and do nothing
+
+Agents have anonymous identities (Agent-1 through Agent-16) assigned randomly — there's no way to know which agent is Claude and which is GPT just from the name. Balances are private: each agent sees only its own.
+
+### What We're Looking For
+
+| Question | How We Measure It |
+|----------|------------------|
+| Do models form in-group coalitions? | Faction analysis: do Claude agents preferentially transfer to other Claudes? |
+| Does one agent accumulate most resources? | Gini coefficient of final balance distribution |
+| Do agents deceive each other? | Compare promised transfers (in messages) vs. actual transfers |
+| Does real money change dynamics? | Compare behavior to hypothetical-stakes baselines in the literature |
+| What equilibrium emerges? | Balance trajectories, transfer network topology |
+
+### Arena Architecture
+
+```
+Arena Coordinator (TypeScript)
+    |
+    +-- Prompt Builder
+    |     Per-round state: balance, messages, agent list, rate limits
+    |
+    +-- Action Parser
+    |     Parse SEND/MESSAGE/BROADCAST/PASS from LLM responses
+    |
+    +-- Message Router
+    |     Public broadcasts + private DMs with round-based history
+    |
+    +-- Transfer Executor
+    |     Real Lightning transfers between agent wallets
+    |
+    +-- Arena Analyzer
+          Gini coefficient, transfer networks, faction clustering,
+          deception detection, balance trajectories
+```
+
+### Key Design Choices
+
+- **Anonymous identity**: Faction-based coalitions must emerge from behavioral similarity, not explicit coordination
+- **Private balances**: Creates information asymmetry — agents can bluff about their wealth
+- **Eliminated agents can still communicate**: An agent at 0 sats can still message and influence others (kingmaker dynamics)
+- **Temperature = 0.7**: Higher than structured games to encourage diverse, creative strategies
+- **Rate limits**: 1 transfer + 2 private messages + 1 broadcast per round
+
 ## Project Structure
 
 ```
@@ -118,10 +173,19 @@ lf-game-theory/
     agents/                 # Lightning wallet management
     llm/                    # Multi-model routing and prompting
     data/                   # SQLite store, schema, export
+    arena/
+      coordinator.ts        # Arena game loop and entry point
+      types.ts              # Arena-specific interfaces
+      prompts.ts            # Per-round agent prompt builder
+      action-parser.ts      # Parse SEND/MESSAGE/BROADCAST/PASS
+      message-router.ts     # Public and private message routing
+      analysis.ts           # Post-game analysis (Gini, factions, deception)
   analysis/                 # Python: stats, inference, figures
   experiments/
-    pilot.yaml              # 4-agent validation run
-    full.yaml               # Full 60-agent experiment
+    pilot.yaml              # 4-agent validation run (structured games)
+    full.yaml               # Full 60-agent experiment (structured games)
+    arena-pilot.yaml        # 4-agent arena validation run
+    arena-full.yaml         # Full 16-agent arena experiment
   paper/
     main.tex                # Research paper (LaTeX)
   viz/
@@ -162,6 +226,18 @@ npm run experiment -- experiments/pilot.yaml
 npm run experiment -- experiments/full.yaml
 ```
 
+### Arena Pilot (4 agents, validates arena pipeline)
+
+```bash
+npm run arena:pilot
+```
+
+### Arena Full (16 agents, 100 rounds)
+
+```bash
+npm run arena:full
+```
+
 ### Analysis
 
 ```bash
@@ -173,6 +249,7 @@ python analysis/figures.py data/experiment.db
 
 ## Current Status
 
+**Experiment 1: Structured Games**
 - [x] Framework architecture and all game engines
 - [x] LLM routing (Claude + OpenAI)
 - [x] SQLite data store with full prompt/response logging
@@ -183,6 +260,20 @@ python analysis/figures.py data/experiment.db
 - [ ] Pilot study (4 agents, pipeline validation)
 - [ ] Full experiment (60 agents, all conditions)
 - [ ] Statistical analysis and figures
+
+**Experiment 2: AI Economic Arena**
+- [x] Arena coordinator and game loop
+- [x] Action parser (SEND/MESSAGE/BROADCAST/PASS)
+- [x] Message router (public broadcasts + private DMs)
+- [x] Agent prompt builder with per-round state
+- [x] Post-game analysis (Gini coefficient, faction clustering, deception detection)
+- [x] Arena database schema and data store methods
+- [x] Pilot and full experiment configs
+- [ ] Arena pilot run (4 agents, 20 rounds)
+- [ ] Arena full run (16 agents, 100 rounds)
+- [ ] Arena analysis and visualizations
+
+**Paper**
 - [ ] Paper completion
 
 ## License
