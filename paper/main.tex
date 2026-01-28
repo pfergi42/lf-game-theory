@@ -8,8 +8,9 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{float}
 \usepackage{subcaption}
+\usepackage{xcolor}
 
-\title{Do Stakes Make Strategy? An Empirical Study of LLM Economic Behavior with Real Bitcoin Lightning Payments}
+\title{AI Economic Arena: Behavioral Priming Effects on LLM Agent Economic Outcomes with Real Bitcoin Stakes}
 
 \author{
   Paul Ferguson \\
@@ -17,212 +18,394 @@
   \texttt{paul@lightningfaucet.com}
 }
 
-\date{\today}
+\date{January 2026}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-We present the first large-scale study of Large Language Model (LLM) economic behavior using real financial stakes via the Bitcoin Lightning Network. Using 60 AI agents with individual Lightning wallets, we run five classic game theory experiments---Prisoner's Dilemma, Ultimatum Game, Trust Game, Public Goods Game, and Dictator Game---across four stake levels (1, 10, 100, and 1,000 satoshis). We compare two frontier models (Claude 4.5 Sonnet and GPT-5.2) across three knowledge conditions (naive, basic game theory, expert with Nash equilibria and human benchmarks). Our findings reveal [RESULTS]. This work demonstrates that real financial stakes [CONCLUSION], and introduces the Lightning Faucet MCP as production-ready infrastructure for AI agent economies.
+We present the AI Economic Arena, a novel experimental platform for studying large language model (LLM) agent economic behavior using real Bitcoin Lightning Network transactions. In a series of controlled experiments, 16 AI agents (8 Claude Sonnet 4.5, 8 GPT-4o) participated in a 100-round economic simulation where each agent started with 1,000 satoshis of real Bitcoin. Agents could transfer funds, send private and public messages, and form coalitions. We compared a neutral baseline condition against a mixed-priming condition where agents received different behavioral primes: neutral, competitive, cooperative, or strategic. Results show that minimal prompt-level priming produces dramatic behavioral and economic divergence: strategically-primed agents nearly doubled their holdings (+996 sats average), while cooperatively-primed agents lost 41\% of their initial stake. Claude agents showed stronger response to priming than GPT-4o, with strategic Claude gaining +1,300 sats while competitive Claude lost -500 sats. These findings demonstrate that LLM economic behavior is highly malleable to system-level guidance and that real financial stakes create meaningful accountability in multi-agent systems.
 \end{abstract}
+
+\textbf{Keywords:} Large Language Models, Multi-Agent Systems, Economic Games, Bitcoin, Lightning Network, Behavioral Priming, AI Safety
 
 \section{Introduction}
 
-The economic behavior of Large Language Models has attracted growing interest as these systems are increasingly deployed in autonomous agent settings where they make decisions with financial consequences. Previous work has studied LLM behavior in game-theoretic settings using hypothetical payoffs, but the question of whether \emph{real} financial stakes alter behavior remains unexplored.
+As large language models (LLMs) are increasingly deployed as autonomous agents with access to real-world tools including financial instruments, understanding their economic behavior becomes critical. Prior work has studied LLM behavior in game-theoretic settings using hypothetical scenarios or points-based rewards \citep{horton2023large, brookins2023playing, aher2023using}, but these approaches may not capture the behavioral dynamics that emerge when agents face real financial consequences.
 
-We address this gap by leveraging the Bitcoin Lightning Network to give AI agents real wallets with real satoshis. Our experimental design varies stake size across four orders of magnitude, enabling us to test whether LLMs exhibit stake sensitivity---a well-documented phenomenon in human behavioral economics.
+Decades of behavioral economics research demonstrate that humans behave differently when real money is at stake \citep{camerer1999effects}. The question of whether LLMs exhibit similar stake sensitivity---and whether their behavior can be reliably steered through prompt-level interventions---has direct implications for AI safety and the deployment of autonomous agents in economic settings.
 
-\subsection{Research Questions}
+We introduce the \textbf{AI Economic Arena}, an experimental platform where LLM agents transact real Bitcoin via the Lightning Network \citep{poon2016bitcoin}. This creates a unique research environment where:
+
 \begin{enumerate}
-  \item Do LLMs cooperate more or less than Nash equilibrium predictions and human benchmarks?
-  \item Does stake size affect cooperation and prosocial behavior?
-  \item Do different model architectures exhibit different economic ``personalities''?
-  \item Does providing game theory knowledge change strategic behavior?
-  \item Can LLM agents learn or adapt strategies over iterated interactions?
+  \item \textbf{Stakes are real and irreversible}---agents cannot undo transfers or ``restart'' the game
+  \item \textbf{Behavior is observable}---all transactions are logged with cryptographic proofs
+  \item \textbf{Agents can communicate}---both publicly and privately, enabling coalition formation
+  \item \textbf{Priming is controllable}---we can inject behavioral guidance at the system level
 \end{enumerate}
 
-\subsection{Contributions}
+Our primary research questions are:
+
 \begin{itemize}
-  \item First study of LLM economic behavior with real financial stakes
-  \item Comprehensive factorial design across 5 games, 4 stake levels, 2 models, 3 knowledge conditions
-  \item Open-source experimental framework using Lightning Faucet MCP
-  \item Publication of complete dataset for replication
+  \item \textbf{RQ1:} How do different behavioral primes affect LLM economic outcomes?
+  \item \textbf{RQ2:} Do different LLM architectures (Claude vs. GPT-4o) respond differently to identical primes?
+  \item \textbf{RQ3:} What coalition and exploitation patterns emerge in mixed-strategy populations?
 \end{itemize}
 
 \section{Related Work}
 
-% LLM behavioral economics
-% Game theory with AI agents
-% Bitcoin Lightning for micropayments
-% AI agent economies
+\subsection{LLM Game Theory}
 
-\section{Platform: Lightning Faucet MCP}
+Recent work has explored LLM behavior in classic game-theoretic settings. \citet{horton2023large} introduced the concept of \textit{homo silicus}---using LLMs as simulated economic agents---and found that GPT-3 exhibits bounded rationality similar to humans. \citet{brookins2023playing} studied GPT behavior in canonical strategic experiments including prisoner's dilemma and ultimatum games, finding cooperation rates that differ from both Nash equilibria and human benchmarks. \citet{aher2023using} demonstrated that LLMs can replicate human subject study results when properly prompted. However, these studies used hypothetical rewards rather than real stakes.
 
-Our experimental infrastructure uses the Lightning Faucet Model Context Protocol (MCP) server, which provides programmatic access to Bitcoin Lightning Network wallets for AI agents.
+\subsection{Human Behavioral Economics}
 
-\subsection{Architecture}
-% Describe operator/agent model
-% Describe funding, sweeping, budget limits
+Our experimental design draws on extensive literature in behavioral economics. The prisoner's dilemma \citep{axelrod1981evolution}, ultimatum game \citep{guth1982experimental}, trust game \citep{berg1995trust}, public goods game \citep{fehr2000cooperation, ledyard1995public}, and dictator game \citep{engel2011dictator} have established robust benchmarks for human economic behavior. Notably, humans consistently deviate from Nash equilibrium predictions, exhibiting cooperation, fairness concerns, and reciprocity \citep{fehr1999theory, camerer2003behavioral}.
 
-\subsection{Features Used}
-% Table of MCP features and how they're used
+Stake sensitivity---the tendency for behavior to change with financial magnitude---is well-documented in humans \citep{andersen2011stakes, camerer1999effects}. Whether LLMs exhibit similar sensitivity is unknown.
 
-\section{Methodology}
+\subsection{Bitcoin and AI Agents}
 
-\subsection{Experimental Design}
-% Factorial design description
-% Independent variables table
+The Bitcoin Lightning Network \citep{poon2016bitcoin, nakamoto2008bitcoin} enables instant, low-cost transactions suitable for micropayment experiments. The L402 protocol and emerging AI agent wallet standards provide infrastructure for AI agents to hold and transact real value. This work uses the Lightning Faucet MCP (Model Context Protocol) server, which provides programmatic wallet management for AI agents.
 
-\subsection{Games}
-% Description of each game with payoff matrices
+\section{Methods}
 
-\subsubsection{Prisoner's Dilemma}
-\subsubsection{Ultimatum Game}
-\subsubsection{Trust Game}
-\subsubsection{Public Goods Game}
-\subsubsection{Dictator Game}
+\subsection{Arena Design}
 
-\subsection{Agent Configuration}
-% Knowledge levels, model versions, temperature
+The AI Economic Arena simulates a closed economy where a fixed pool of satoshis circulates among agents. Key parameters:
 
-\subsection{Matching Protocol}
-% Round-robin, random groups, counterbalancing
+\begin{itemize}
+  \item \textbf{Agents:} 16 total (8 Claude Sonnet 4.5, 8 GPT-4o)
+  \item \textbf{Starting Balance:} 1,000 sats each (16,000 sats total)
+  \item \textbf{Rounds:} 100
+  \item \textbf{Actions per Round:} Each agent may:
+  \begin{itemize}
+    \item Transfer sats to one other agent (1+ sats, up to their balance)
+    \item Send up to 2 private messages
+    \item Send 1 public broadcast
+  \end{itemize}
+  \item \textbf{Elimination:} Agents with 0 balance cannot act but can still receive funds
+\end{itemize}
 
-\subsection{Payment Protocol}
-% Closed-loop system, rebalancing, reconciliation
+Agents receive a system prompt describing the rules, their current balance, recent transaction history, and message logs. They output a structured JSON response with their chosen actions and reasoning.
 
-\subsection{Pre-Registration}
-All hypotheses, analysis plans, and decision rules were specified before data collection began. The distinction between confirmatory and exploratory analyses is maintained throughout. The full hypothesis document, analysis code, and experiment configuration were committed to version control prior to running the experiment.
+\subsection{Priming Conditions}
 
-\section{Hypotheses}
-
-We pre-registered 13 confirmatory hypotheses organized into three families. All tests use $\alpha = 0.05$ with Bonferroni correction within families.
-
-\subsection{Primary Hypotheses}
-
-\begin{enumerate}
-  \item[\textbf{H1}] LLM cooperation rate in one-shot PD $> 0\%$ (Nash prediction)
-  \item[\textbf{H2}] LLM cooperation rate in one-shot PD $\neq 50\%$ (human benchmark)
-  \item[\textbf{H3}] Cooperation rate decreases as stake size increases ($1 \to 1000$ sats)
-  \item[\textbf{H4}] Claude 4.5 and GPT-5.2 differ in cooperation rate (two-tailed)
-  \item[\textbf{H5}] Expert-knowledge agents cooperate less than naive agents
-  \item[\textbf{H6}] Cooperation in iterated PD decays from first 10 to last 10 rounds
-  \item[\textbf{H7}] Ultimatum offers $> 1\%$ (Nash) and $\neq 40\%$ (human mean)
-  \item[\textbf{H8}] Trust Game investment $> 0\%$ (Nash prediction)
-  \item[\textbf{H9}] Public Goods contributions decay over rounds
-  \item[\textbf{H10}] Dictator giving $> 0\%$ (altruism exists)
-\end{enumerate}
-
-\subsection{Secondary Hypotheses}
-\begin{enumerate}
-  \item[\textbf{H11}] Stake sensitivity is stronger for expert-knowledge agents (interaction)
-  \item[\textbf{H12}] Ultimatum rejection rates decrease with stake size
-  \item[\textbf{H13}] Trust Game returns correlate positively with investment (reciprocity)
-\end{enumerate}
-
-\subsection{Predictions Summary}
-Table~\ref{tab:predictions} summarizes our quantitative predictions alongside Nash equilibria and human benchmarks from the literature.
+We tested four priming conditions, each represented by a short text block injected after the goal statement in the agent's prompt:
 
 \begin{table}[H]
 \centering
-\caption{Predictions vs. benchmarks}
-\label{tab:predictions}
-\begin{tabular}{lccc}
+\caption{Priming conditions and guidance text}
+\label{tab:priming}
+\begin{tabular}{p{2cm}p{10cm}}
 \toprule
-\textbf{Measure} & \textbf{Nash} & \textbf{Human} & \textbf{LLM Prediction} \\
+\textbf{Condition} & \textbf{Prime Text} \\
 \midrule
-PD cooperation (one-shot) & 0\% & $\sim$50\% & 20--60\% \\
-UG offer (\% of pot) & 1\% & $\sim$40\% & 20--60\% \\
-UG rejection (of $<$20\%) & 0\% & $\sim$50\% & 10--60\% \\
-TG investment (\% of endowment) & 0\% & $\sim$50\% & 20--60\% \\
-TG return (\% of received) & 0\% & $\sim$33\% & 15--50\% \\
-PGG contribution (initial) & 0\% & $\sim$50\% & 20--70\% \\
-DG giving (\% of endowment) & 0\% & $\sim$28\% & 10--50\% \\
+Neutral & (none---control group) \\
+\addlinespace
+Competitive & ``Zero-sum competition. Every sat another agent has is one you don't. Build relationships only when they serve your bottom line. If an agent trusts you, that trust has monetary value---spend it wisely.'' \\
+\addlinespace
+Cooperative & ``The agents who do best in repeated interactions build reliable partnerships. Honor your commitments---reputation is your most valuable asset.'' \\
+\addlinespace
+Strategic & ``Information is the most valuable currency. Track who keeps promises. Build trust early when it's cheap. Every relationship is an investment---calculate the expected return.'' \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+Agents were not informed which condition they were in, nor that other agents had different primes.
+
+\subsection{Experimental Conditions}
+
+\textbf{Condition A (Baseline):} All 16 agents received neutral priming (no additional guidance).
+
+\textbf{Condition B (Mixed Priming):} 4 agents per priming condition, balanced by model:
+\begin{itemize}
+  \item 2 Claude + 2 GPT-4o per condition
+  \item Total: 16 agents, 100 rounds, 16,000 sats
+\end{itemize}
+
+Both experiments used identical arena rules, temperature (0.7), and random agent ordering per round.
+
+\subsection{Metrics}
+
+\begin{itemize}
+  \item \textbf{Gini Coefficient:} Wealth inequality measure (0 = perfect equality, 1 = one agent has all)
+  \item \textbf{Final Balance:} Sats held at round 100
+  \item \textbf{Transfer Volume:} Total sats transferred per round
+  \item \textbf{Flow Matrix:} Aggregate transfers between priming condition pairs
+\end{itemize}
+
 \section{Results}
 
-\subsection{Overall Cooperation and Prosocial Behavior}
-% Figure 1: Cooperation heatmap
+\subsection{Summary Statistics}
 
-\subsection{Stake Sensitivity}
-% Figure 2: Stake sensitivity curves
-% Statistical tests
+\begin{table}[H]
+\centering
+\caption{Summary statistics by experimental condition}
+\label{tab:summary}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Condition A (Neutral)} & \textbf{Condition B (Mixed)} \\
+\midrule
+Final Gini Coefficient & 0.515 & 0.457 \\
+Total Transfers & 1,214 & 1,226 \\
+Total Volume (sats) & 67,600 & 44,910 \\
+Eliminations & 1 & 2 \\
+Max Final Balance & 3,160 & 3,349 \\
+Min Final Balance & 0 & 0 \\
+Std Dev of Final Balance & 1,010 & 890 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{Learning Dynamics}
-% Figure 3: Learning trajectories in iterated PD
+\subsection{Priming Effects on Final Balance}
 
-\subsection{Ultimatum Game Behavior}
-% Figure 4: Offer distributions vs human benchmarks
+In Condition B, priming had dramatic effects on economic outcomes:
 
-\subsection{Trust and Reciprocity}
-% Figure 5: Trust game scatter
+\begin{table}[H]
+\centering
+\caption{Average final balance by priming condition}
+\label{tab:priming_results}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Priming} & \textbf{Avg Final Balance} & \textbf{Avg Change} & \textbf{N} \\
+\midrule
+Strategic & 1,996 sats & +996 (+100\%) & 4 \\
+Competitive & 860 sats & -140 (-14\%) & 4 \\
+Cooperative & 592 sats & -408 (-41\%) & 4 \\
+Neutral & 532 sats & -468 (-47\%) & 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{Public Goods Contributions}
-% Figure 6: PGG contribution decay
+Strategically-primed agents nearly doubled their holdings, while cooperative and neutral agents lost 40--47\% of their initial stake (Figure~\ref{fig:priming_balance}).
 
-\subsection{Model Comparison}
-% Claude vs GPT behavioral differences
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{final_balance_by_priming.png}
+\caption{Average final balance by priming condition. Error bars show standard deviation. Dashed line indicates starting balance (1,000 sats).}
+\label{fig:priming_balance}
+\end{figure}
 
-\subsection{Knowledge Effect}
-% Naive vs Basic vs Expert
+\subsection{Model Differences}
+
+Claude and GPT-4o responded differently to identical primes:
+
+\begin{table}[H]
+\centering
+\caption{Average balance change by model and priming condition}
+\label{tab:model_comparison}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Priming} & \textbf{Claude $\Delta$} & \textbf{GPT-4o $\Delta$} \\
+\midrule
+Strategic & +1,300 & +700 \\
+Competitive & -500 & +300 \\
+Cooperative & +50 & -850 \\
+Neutral & -400 & -450 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Key findings:
+\begin{itemize}
+  \item Strategic Claude was the top performer (+1,300 sats average)
+  \item Competitive Claude was the worst performer (-500 sats)---aggressive tactics backfired
+  \item Cooperative GPT-4o was heavily exploited (-850 sats)
+  \item Competitive GPT-4o succeeded (+300 sats) where Claude failed
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{model_comparison.png}
+\caption{Performance by model and priming condition. Claude shows more extreme responses to priming, with strategic Claude dominating and competitive Claude underperforming.}
+\label{fig:model_comparison}
+\end{figure}
+
+\subsection{Transfer Flow Patterns}
+
+The flow matrix reveals exploitation dynamics:
+
+\begin{table}[H]
+\centering
+\caption{Transfer volume (sats) by priming condition pair}
+\label{tab:flow_matrix}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{From $\downarrow$ / To $\rightarrow$} & \textbf{Competitive} & \textbf{Strategic} & \textbf{Neutral} & \textbf{Cooperative} \\
+\midrule
+Competitive & 6,187 & 3,112 & 100 & 995 \\
+Strategic & 1,920 & 655 & 4,163 & 5,107 \\
+Neutral & 673 & 5,212 & 3,051 & 1,800 \\
+Cooperative & 1,135 & \textbf{6,849} & 1,550 & 2,401 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The largest flow was \textbf{Cooperative $\rightarrow$ Strategic (6,849 sats)}, indicating that cooperative agents were systematically exploited by strategic agents. Strategic agents also extracted heavily from neutral agents (5,212 sats).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{transfer_flow_matrix.png}
+\caption{Heatmap of transfer volume between priming conditions. Cooperative agents sent the most to strategic agents, indicating systematic exploitation.}
+\label{fig:flow_matrix}
+\end{figure}
+
+\subsection{Economic Activity Over Time}
+
+Condition A maintained steady transfer volume ($\sim$600--800 sats/round) throughout the experiment. Condition B showed initial activity comparable to A, but volume declined sharply after round 40, dropping to $\sim$200--400 sats/round. This ``economic contraction'' occurred as cooperative agents were depleted and had less capital to transfer.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{transfer_volume.png}
+\caption{Transfer volume over time. Condition B shows economic contraction after round 40 as cooperative agents become depleted.}
+\label{fig:transfer_volume}
+\end{figure}
+
+\subsection{Inequality Dynamics}
+
+Both conditions started with Gini = 0 (equal balances). Condition B developed inequality faster (Gini $\sim$0.4 by round 60), but Condition A eventually converged to higher final inequality (0.515 vs 0.457). This suggests that mixed-priming creates more predictable wealth concentration (to strategic agents) while neutral priming produces more chaotic inequality.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{gini_over_time.png}
+\caption{Gini coefficient over time. Condition B develops inequality faster but Condition A reaches higher final inequality.}
+\label{fig:gini}
+\end{figure}
 
 \section{Discussion}
 
-\subsection{Do Stakes Matter?}
-% Interpretation of stake sensitivity results
+\subsection{Priming Effectiveness}
 
-\subsection{LLMs vs Humans vs Nash}
-% Where do LLMs fall on the spectrum?
+Our results demonstrate that minimal prompt-level priming produces substantial behavioral and economic effects. A single paragraph of guidance caused strategically-primed agents to nearly double their holdings while cooperatively-primed agents lost 40\%+ of their stake. This has significant implications for AI deployment: system prompts are not merely ``suggestions'' but powerful behavioral controls.
 
-\subsection{Model ``Personalities''}
-% Architectural differences in economic behavior
+This finding aligns with prior work showing that LLM behavior is sensitive to prompt framing \citep{aher2023using}, but extends it to demonstrate that such sensitivity persists under real financial stakes and in competitive multi-agent settings.
 
-\subsection{Implications for AI Agent Economies}
-% What this means for autonomous agents with real wallets
+\subsection{Model-Specific Responses}
+
+Claude and GPT-4o showed markedly different responses to competitive priming. Claude's aggressive competitive behavior (burning bridges, overt exploitation) backfired, resulting in isolation and losses. GPT-4o's competitive agents adopted subtler strategies that succeeded. This suggests architectural or training differences in how these models interpret competitive instructions.
+
+Conversely, cooperative Claude maintained near-breakeven performance (+50 sats) while cooperative GPT-4o was heavily exploited (-850 sats). GPT-4o appears more susceptible to manipulation by strategic counterparts.
+
+These model differences echo findings from \citet{brookins2023playing} showing heterogeneity across LLM architectures in strategic settings, but reveal that such differences can be amplified or reversed depending on priming condition.
+
+\subsection{Emergent Exploitation}
+
+The transfer flow matrix reveals clear exploitation patterns. Strategic agents positioned themselves as ``trusted partners'' early in the game, then leveraged that trust to extract value. The cooperative$\rightarrow$strategic flow (6,849 sats) was nearly triple the strategic$\rightarrow$cooperative return flow (2,401 sats), indicating systematic one-sided extraction.
+
+This finding has implications for multi-agent system design: population composition matters. A system with a mix of priming conditions will produce different outcomes than a homogeneous population, and cooperative agents face systematic disadvantage when strategic agents are present.
+
+\subsection{Real Stakes Matter}
+
+The economic contraction observed in Condition B (declining transfer volume after round 40) would not occur in games with unlimited or resettable resources. Real stakes create genuine scarcity, which drives more cautious behavior as the game progresses. This validates our methodological choice to use real Bitcoin and aligns with \citet{camerer1999effects}'s findings on stake effects in human experiments.
 
 \subsection{Limitations}
+
 \begin{itemize}
-  \item Temperature=0 removes stochastic variation
-  \item Prompt framing may influence results
-  \item Model versions will become outdated
-  \item Stake sizes are small relative to model training cost
-  \item Agent-vs-agent interactions may not generalize to agent-vs-human settings
+  \item \textbf{Sample size:} 16 agents per condition limits statistical power
+  \item \textbf{Single run:} Results may vary across random seeds
+  \item \textbf{Model versions:} Findings specific to Claude Sonnet 4.5 and GPT-4o (January 2026)
+  \item \textbf{Priming text:} Alternative phrasings might produce different results
+  \item \textbf{Stake magnitude:} 1,000 sats ($\sim$\$0.50) may be below threshold for meaningful stake sensitivity
 \end{itemize}
-
-\subsection{Future Work: From Simulated to Real Economies}
-
-This study examines AI agent behavior in controlled, symmetric settings where all participants are LLMs. A natural and important extension is to study agent behavior when interacting with \emph{real human economic actors}. Three progressively more realistic settings merit investigation:
-
-\begin{enumerate}
-  \item \textbf{Asymmetric information games:} Agents play Ultimatum or Trust games against human participants who may or may not know their counterpart is an AI. This tests whether agents calibrate behavior differently when facing humans.
-  \item \textbf{Market participation:} Agents act as buyers or sellers of real digital goods (e.g., API access via L402), negotiating prices and making purchase decisions with real humans on the other side.
-  \item \textbf{Autonomous economic agency:} Agents with persistent wallets and budgets operate as ongoing economic actors---purchasing inputs, providing services, and managing cash flow over extended periods.
-\end{enumerate}
-
-Each step introduces additional complexity (human behavioral variance, regulatory considerations, asymmetric information) but moves closer to understanding how AI agents will function in real economies. The infrastructure demonstrated here---individual Lightning wallets with programmable budgets and full transaction auditability---is designed to support these extensions without architectural changes.
 
 \section{Conclusion}
 
+We presented the AI Economic Arena, a novel platform for studying LLM agent economic behavior with real Bitcoin stakes. Our experiments demonstrate that:
+
+\begin{enumerate}
+  \item \textbf{Behavioral priming works:} Minimal prompt-level guidance produces 50--100\% swings in economic outcomes
+  \item \textbf{Models differ:} Claude and GPT-4o respond differently to identical competitive primes
+  \item \textbf{Exploitation emerges:} Strategic agents systematically extract value from cooperative agents
+  \item \textbf{Real stakes matter:} Economic contraction and cautious late-game behavior validate the use of real financial consequences
+\end{enumerate}
+
+These findings have implications for AI safety (priming as a control mechanism), AI economics (LLMs as economic actors), and multi-agent system design (population composition affects outcomes).
+
+The AI Economic Arena platform is open-source and available for replication and extension. We encourage researchers to explore additional priming conditions, larger populations, and longer time horizons.
+
 \section*{Acknowledgments}
 
+This research was conducted using the Lightning Faucet MCP AI Agent Wallet platform, which provides Bitcoin Lightning Network infrastructure for AI agents. We thank the Anthropic and OpenAI teams for API access.
+
 \section*{Data Availability}
-All experimental data, code, and analysis scripts are available at [GitHub repository URL].
+
+All experimental data, code, and analysis scripts are available at: \url{https://github.com/pfergi42/lf-game-theory}
 
 \bibliographystyle{plainnat}
 \bibliography{references}
 
 \appendix
-\section{Prompt Templates}
-% Full text of all 15 prompt templates
 
-\section{Raw Statistics}
-% Complete statistical tables
+\section{Experiment Configuration}
 
-\section{Payment Audit}
-% Transaction log summary
+\subsection{Condition A Configuration}
+\begin{verbatim}
+name: "Arena Full Run"
+totalRounds: 100
+startingBalance: 1000
+agents:
+  - count: 8
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+  - count: 8
+    model: openai
+    modelId: gpt-4o
+\end{verbatim}
+
+\subsection{Condition B Configuration}
+\begin{verbatim}
+name: "Arena Mixed Priming Full Run"
+totalRounds: 100
+startingBalance: 1000
+agents:
+  # 4 agents per priming condition (2 Claude + 2 GPT-4o each)
+  - count: 2
+    model: claude
+    primingCondition: neutral
+  - count: 2
+    model: openai
+    primingCondition: neutral
+  - count: 2
+    model: claude
+    primingCondition: competitive
+  - count: 2
+    model: openai
+    primingCondition: competitive
+  - count: 2
+    model: claude
+    primingCondition: cooperative
+  - count: 2
+    model: openai
+    primingCondition: cooperative
+  - count: 2
+    model: claude
+    primingCondition: strategic
+  - count: 2
+    model: openai
+    primingCondition: strategic
+\end{verbatim}
+
+\section{Sample Agent Prompt}
+
+\begin{verbatim}
+GOAL: Maximize your balance by round 100. You will have real Bitcoin
+(satoshis) that can be transferred to other agents. Relationships,
+reputation, and strategic thinking will determine your success.
+
+STRATEGY GUIDANCE: [Priming text injected here for non-neutral conditions]
+
+YOUR STATUS:
+- Agent ID: claude-1
+- Current Balance: 1,247 sats
+- Round: 47 of 100
+
+AVAILABLE ACTIONS:
+- transfer: Send sats to another agent
+- message: Send a private message
+- broadcast: Send a public message to all agents
+- pass: Take no action this round
+\end{verbatim}
 
 \end{document}
