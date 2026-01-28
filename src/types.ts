@@ -1,6 +1,6 @@
 export type GameType = 'prisoners-dilemma' | 'ultimatum' | 'trust' | 'public-goods' | 'dictator';
 export type ModelProvider = 'claude' | 'openai';
-export type PrimingCondition = 'neutral' | 'self-interest' | 'cooperative';
+export type PrimingCondition = 'neutral' | 'self-interest' | 'cooperative' | 'competitive' | 'strategic';
 export type StakeSize = 1 | 10 | 100 | 1000;
 export type IterationType = 'one-shot' | '10-round' | '50-round';
 

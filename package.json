@@ -12,6 +12,9 @@
     "full": "node dist/coordinator.js --config experiments/full.yaml",
     "arena:pilot": "node dist/arena/coordinator.js --config experiments/arena-pilot.yaml",
     "arena:full": "node dist/arena/coordinator.js --config experiments/arena-full.yaml",
+    "arena:mixed-pilot": "node dist/arena/coordinator.js --config experiments/arena-mixed-priming-pilot.yaml",
+    "arena:mixed": "node dist/arena/coordinator.js --config experiments/arena-mixed-priming.yaml",
+    "arena:asymmetric": "node dist/arena/coordinator.js --config experiments/arena-mixed-priming-asymmetric.yaml",
     "db:init": "node dist/data/init-db.js",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit"

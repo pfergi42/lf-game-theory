@@ -1,5 +1,7 @@
 // Arena-specific types for multi-agent economic simulation
 
+import type { PrimingCondition } from '../types.js';
+
 export interface ArenaConfig {
   name: string;
   description: string;
@@ -17,6 +19,8 @@ export interface ArenaAgentGroup {
   count: number;
   model: 'claude' | 'openai';
   modelId: string;
+  primingCondition?: PrimingCondition;
+  startingBalance?: number;
 }
 
 export interface ArenaRules {
@@ -32,6 +36,7 @@ export interface ArenaAgent {
   anonymousName: string; // "Agent-1", "Agent-2", etc.
   model: 'claude' | 'openai';
   modelId: string;
+  primingCondition: PrimingCondition;
   lightningAgentId?: number;
   lightningApiKey?: string;
   balance: number;
@@ -94,6 +99,7 @@ export interface ArenaPromptContext {
   privateMessages: ArenaMessage[];
   rules: ArenaRules;
   isFinalRound: boolean;
+  primingText?: string;
 }
 
 export interface ArenaExperimentResult {

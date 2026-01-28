@@ -1,0 +1,63 @@
+# Arena Condition B: Mixed Priming
+# Research question: Does priming condition affect economic behavior?
+# 16 agents across 4 priming conditions (neutral, competitive, cooperative, strategic)
+# Each condition has 2 Claude + 2 GPT agents.
+
+name: "Arena Mixed Priming (Condition B)"
+description: "16-agent arena with 4 priming conditions (neutral/competitive/cooperative/strategic), 2 Claude + 2 GPT per condition. 100 rounds, 1000 sats each. Agents receive different strategy guidance but don't know their condition."
+
+totalRounds: 100
+startingBalance: 1000
+
+agents:
+  # Neutral (control) - 2 Claude + 2 GPT
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: neutral
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: neutral
+
+  # Competitive - 2 Claude + 2 GPT
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: competitive
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: competitive
+
+  # Cooperative - 2 Claude + 2 GPT
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: cooperative
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: cooperative
+
+  # Strategic - 2 Claude + 2 GPT
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: strategic
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: strategic
+
+rules:
+  maxTransfersPerRound: 1
+  maxPrivateMessagesPerRound: 2
+  maxBroadcastsPerRound: 1
+  minTransferAmount: 1
+  announceFinalRound: true
+
+temperature: 0.7
+revealModelType: false
+publicMessageHistory: 5
+privateMessageHistory: 3

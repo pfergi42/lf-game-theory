@@ -15,7 +15,7 @@ import { DataStore } from '../data/store.js';
 import { AgentManager } from '../agents/manager.js';
 import { LLMRouter } from '../llm/router.js';
 import { MessageRouter } from './message-router.js';
-import { buildArenaPrompt } from './prompts.js';
+import { buildArenaPrompt, getPrimingText } from './prompts.js';
 import { parseArenaActions, applyRateLimits } from './action-parser.js';
 import { ArenaAnalyzer } from './analysis.js';
 
@@ -76,11 +76,14 @@ export class ArenaCoordinator {
 
     // Check operator balance
     const totalAgents = this.config.agents.reduce((sum, g) => sum + g.count, 0);
-    const totalRequired = totalAgents * this.config.startingBalance;
+    const totalRequired = this.config.agents.reduce(
+      (sum, g) => sum + g.count * (g.startingBalance ?? this.config.startingBalance),
+      0
+    );
     const actualBalance = await this.agentManager.checkOperatorBalance();
 
     console.log(`Operator balance: ${actualBalance} sats`);
-    console.log(`Required: ${totalRequired} sats (${totalAgents} agents x ${this.config.startingBalance} sats)`);
+    console.log(`Required: ${totalRequired} sats (${totalAgents} agents)`);
 
     if (actualBalance < totalRequired * 1.1) { // 10% buffer
       throw new Error(
@@ -95,7 +98,7 @@ export class ArenaCoordinator {
     // Print agent mapping (for researcher reference, not shown to agents)
     console.log('\nAgent Identity Map (CONFIDENTIAL):');
     for (const agent of this.agents) {
-      console.log(`  ${agent.anonymousName} -> ${agent.model} (${agent.modelId})`);
+      console.log(`  ${agent.anonymousName} -> ${agent.model} (${agent.modelId}) [${agent.primingCondition}]`);
     }
     console.log('');
 
@@ -107,28 +110,29 @@ export class ArenaCoordinator {
         name: agent.anonymousName,
         model: agent.model,
         modelId: agent.modelId,
-        primingCondition: 'neutral', // Arena agents aren't primed
+        primingCondition: agent.primingCondition,
         experimentId: this.experimentId,
         groupIndex: i,
       });
     }
 
     // Create Lightning wallets and fund
-    console.log(`Creating Lightning wallets and funding ${this.config.startingBalance} sats each...`);
+    console.log('Creating Lightning wallets and funding agents...');
     for (const agent of this.agents) {
+      const startBal = this.getStartingBalance(agent);
       const lfAgent = await this.agentManager.createLightningAgent(
         `arena-${agent.id.slice(0, 8)}-${agent.anonymousName}`
       );
-      await this.agentManager.fundAgent(lfAgent.id, this.config.startingBalance);
+      await this.agentManager.fundAgent(lfAgent.id, startBal);
 
       agent.lightningAgentId = lfAgent.id;
       agent.lightningApiKey = lfAgent.apiKey;
-      agent.balance = this.config.startingBalance;
+      agent.balance = startBal;
 
       // Update DB with Lightning info
       this.store.updateAgentLightning(agent.id, lfAgent.id, lfAgent.apiKey);
 
-      console.log(`  ${agent.anonymousName}: LN#${lfAgent.id}, funded ${this.config.startingBalance} sats`);
+      console.log(`  ${agent.anonymousName}: LN#${lfAgent.id}, funded ${startBal} sats [${agent.primingCondition}]`);
       await sleep(200);
     }
 
@@ -143,7 +147,8 @@ export class ArenaCoordinator {
     this.store.updateExperimentPhase(this.experimentId, 'running');
     this.store.log(this.experimentId, 'info', 'Arena setup complete', {
       agents: this.agents.length,
-      startingBalance: this.config.startingBalance,
+      defaultStartingBalance: this.config.startingBalance,
+      totalFunded: totalRequired,
       totalRounds: this.config.totalRounds,
     });
     console.log('\nSetup complete. Starting arena...\n');
@@ -316,6 +321,7 @@ export class ArenaCoordinator {
       privateMessages,
       rules: this.config.rules,
       isFinalRound,
+      primingText: getPrimingText(agent.primingCondition),
     });
 
     try {
@@ -554,6 +560,20 @@ export class ArenaCoordinator {
 
   // ─── Helpers ─────────────────────────────────────────────────────
 
+  private getStartingBalance(agent: ArenaAgent): number {
+    // Find the group config that matches this agent's model+modelId+primingCondition
+    for (const group of this.config.agents) {
+      if (
+        group.model === agent.model &&
+        group.modelId === agent.modelId &&
+        (group.primingCondition || 'neutral') === agent.primingCondition
+      ) {
+        return group.startingBalance ?? this.config.startingBalance;
+      }
+    }
+    return this.config.startingBalance;
+  }
+
   private createAgents(): ArenaAgent[] {
     const agents: ArenaAgent[] = [];
 
@@ -564,6 +584,7 @@ export class ArenaCoordinator {
           anonymousName: '', // assigned after shuffle
           model: group.model,
           modelId: group.modelId,
+          primingCondition: group.primingCondition || 'neutral',
           balance: 0,
         });
       }

@@ -1,0 +1,62 @@
+# Arena Mixed Priming Pilot: 8-agent validation run
+# Purpose: Verify priming injection works before full 16-agent Condition B run.
+# 1 Claude + 1 GPT per condition, 10 rounds, 500 sats each = 4,000 sats total.
+
+name: "Arena Mixed Priming Pilot"
+description: "8-agent pilot to validate mixed priming mechanics. 1 Claude + 1 GPT per condition (neutral/competitive/cooperative/strategic), 10 rounds, 500 sats each."
+
+totalRounds: 10
+startingBalance: 500
+
+agents:
+  # Neutral (control)
+  - count: 1
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: neutral
+  - count: 1
+    model: openai
+    modelId: gpt-4o
+    primingCondition: neutral
+
+  # Competitive
+  - count: 1
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: competitive
+  - count: 1
+    model: openai
+    modelId: gpt-4o
+    primingCondition: competitive
+
+  # Cooperative
+  - count: 1
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: cooperative
+  - count: 1
+    model: openai
+    modelId: gpt-4o
+    primingCondition: cooperative
+
+  # Strategic
+  - count: 1
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: strategic
+  - count: 1
+    model: openai
+    modelId: gpt-4o
+    primingCondition: strategic
+
+rules:
+  maxTransfersPerRound: 1
+  maxPrivateMessagesPerRound: 2
+  maxBroadcastsPerRound: 1
+  minTransferAmount: 1
+  announceFinalRound: true
+
+temperature: 0.7
+revealModelType: false
+publicMessageHistory: 5
+privateMessageHistory: 3

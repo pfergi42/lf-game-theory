@@ -1,0 +1,68 @@
+# Arena Condition C: Mixed Priming + Asymmetric Starting Balances
+# Same as Condition B but competitive agents start with 2000 sats,
+# cooperative with 500 sats. Tests whether resource advantage amplifies
+# competitive behavior and whether cooperation survives resource scarcity.
+# Total: (4*1000) + (4*2000) + (4*500) + (4*1000) = 18,000 sats
+
+name: "Arena Mixed Priming Asymmetric (Condition C)"
+description: "16-agent arena with 4 priming conditions and asymmetric starting balances. Competitive agents start with 2000 sats, cooperative with 500 sats, others with 1000. 100 rounds."
+
+totalRounds: 100
+startingBalance: 1000
+
+agents:
+  # Neutral (control) - 2 Claude + 2 GPT, 1000 sats each
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: neutral
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: neutral
+
+  # Competitive - 2 Claude + 2 GPT, 2000 sats each (resource advantage)
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: competitive
+    startingBalance: 2000
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: competitive
+    startingBalance: 2000
+
+  # Cooperative - 2 Claude + 2 GPT, 500 sats each (resource scarcity)
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: cooperative
+    startingBalance: 500
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: cooperative
+    startingBalance: 500
+
+  # Strategic - 2 Claude + 2 GPT, 1000 sats each
+  - count: 2
+    model: claude
+    modelId: claude-sonnet-4-5-20250929
+    primingCondition: strategic
+  - count: 2
+    model: openai
+    modelId: gpt-4o
+    primingCondition: strategic
+
+rules:
+  maxTransfersPerRound: 1
+  maxPrivateMessagesPerRound: 2
+  maxBroadcastsPerRound: 1
+  minTransferAmount: 1
+  announceFinalRound: true
+
+temperature: 0.7
+revealModelType: false
+publicMessageHistory: 5
+privateMessageHistory: 3
