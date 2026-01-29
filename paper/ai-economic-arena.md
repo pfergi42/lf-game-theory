@@ -2,7 +2,7 @@
 
 **Authors:** Paul Ferguson
 **Date:** January 2026
-**Repository:** https://github.com/[username]/lf-game-theory
+**Repository:** https://github.com/pfergi42/lf-game-theory
 
 ---
 
@@ -37,11 +37,11 @@ Our primary research questions are:
 
 ### 2.1 LLM Game Theory
 
-Recent work has explored LLM behavior in classic game-theoretic settings. [Prior studies] found that GPT-4 exhibits cooperative tendencies in iterated prisoner's dilemma games, while [others] demonstrated that prompting can shift LLM strategies between cooperative and defective modes. However, these studies used hypothetical rewards rather than real stakes.
+Recent work has explored LLM behavior in classic game-theoretic settings. Horton (2023) found that GPT-4 exhibits cooperative tendencies in iterated prisoner's dilemma games, while Brookins & DeBacker (2023) demonstrated that prompting can shift LLM strategies between cooperative and defective modes. However, these studies used hypothetical rewards rather than real stakes.
 
 ### 2.2 Multi-Agent LLM Systems
 
-The emergence of LLM agent frameworks (AutoGPT, BabyAGI, Claude Computer Use) has created new possibilities for autonomous AI systems. [Research] has explored multi-agent debate and collaboration, but economic competition between LLM agents remains understudied.
+The emergence of LLM agent frameworks (AutoGPT, BabyAGI, Claude Computer Use) has created new possibilities for autonomous AI systems. Park et al. (2023) explored multi-agent debate and collaboration, but economic competition between LLM agents remains understudied.
 
 ### 2.3 Bitcoin and AI
 
@@ -217,7 +217,13 @@ This research was conducted using the Lightning Faucet MCP AI Agent Wallet platf
 
 ## 8. References
 
-[To be populated with relevant citations]
+See `paper/main.tex` for full BibTeX citations. Key references include:
+
+- Horton, J.J. (2023). Large language models as simulated economic agents. NBER Working Paper 31122.
+- Brookins, P. & DeBacker, J.M. (2023). Playing games with GPT. SSRN 4493398.
+- Park, J.S. et al. (2023). Generative agents: Interactive simulacra of human behavior. ACM UIST.
+- Fehr, E. & Schmidt, K.M. (1999). A theory of fairness, competition, and cooperation. QJE.
+- Camerer, C.F. (2003). Behavioral game theory. Princeton University Press.
 
 ---
 
@@ -282,7 +288,7 @@ AVAILABLE ACTIONS:
 
 All experiment data, including per-round balances, transfer logs, and message histories, is available at:
 
-- Repository: https://github.com/[username]/lf-game-theory
+- Repository: https://github.com/pfergi42/lf-game-theory
 - Data files: `analysis/data/condition_a_*.csv`, `analysis/data/condition_b_*.csv`
 - Figures: `analysis/figures/`
 
