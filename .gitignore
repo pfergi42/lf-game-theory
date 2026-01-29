@@ -14,6 +14,8 @@ paper/*.pdf
 paper/*.bbl
 paper/*.blg
 paper/*.synctex.gz
+paper/arxiv-submission/
+paper/arxiv-submission.zip
 __pycache__/
 *.pyc
 .venv/
