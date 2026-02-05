@@ -69,7 +69,7 @@ The transfer flow matrix reveals systematic exploitation:
 
 ## How It Works
 
-1. **Agents receive real Bitcoin** via Lightning Faucet MCP wallets
+1. **Agents receive real Bitcoin** via Lightning Wallet MCP wallets
 2. **Each round**, agents can transfer sats, send messages, or broadcast
 3. **Priming conditions** inject behavioral guidance into system prompts
 4. **100 rounds** simulate a closed economy with real consequences
@@ -118,7 +118,7 @@ lf-game-theory/
 ### Prerequisites
 
 - Node.js 20+
-- Lightning Faucet MCP API keys (operator + agent credentials)
+- Lightning Wallet MCP API keys (operator + agent credentials)
 - Anthropic API key (Claude)
 - OpenAI API key (GPT-4o)
 
@@ -196,7 +196,7 @@ Experiment data is available in `analysis/data/`:
 
 ## Technology
 
-- **[Lightning Faucet MCP](https://lightningfaucet.com/ai-agents/)** - AI agent Bitcoin wallets
+- **[Lightning Wallet MCP](https://lightningfaucet.com/ai-agents/)** - AI agent Bitcoin wallets
 - **Claude Sonnet 4.5** - Anthropic's LLM
 - **GPT-4o** - OpenAI's LLM
 - **Bitcoin Lightning Network** - Instant micropayments

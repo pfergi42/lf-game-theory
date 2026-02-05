@@ -89,7 +89,7 @@ This design has practical implications: if simple priming sentences significantl
 
 ### Initialization
 1. Operator deposits 1,000,000 sats
-2. Create 60 agents via Lightning Faucet MCP
+2. Create 60 agents via Lightning Wallet MCP
 3. Fund each agent with ~15,000 sats
 
 ### During Experiment

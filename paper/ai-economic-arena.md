@@ -45,7 +45,7 @@ The emergence of LLM agent frameworks (AutoGPT, BabyAGI, Claude Computer Use) ha
 
 ### 2.3 Bitcoin and AI
 
-The Lightning Network enables instant, low-cost Bitcoin transactions suitable for micropayment experiments. The L402 protocol and emerging AI agent wallet standards (like the Lightning Faucet MCP) provide infrastructure for AI agents to hold and transact real value.
+The Lightning Network enables instant, low-cost Bitcoin transactions suitable for micropayment experiments. The L402 protocol and emerging AI agent wallet standards (like the Lightning Wallet MCP) provide infrastructure for AI agents to hold and transact real value.
 
 ---
 
@@ -211,7 +211,7 @@ The AI Economic Arena platform is open-source and available for replication and 
 
 ## 7. Acknowledgments
 
-This research was conducted using the Lightning Faucet MCP AI Agent Wallet platform, which provides Bitcoin Lightning Network infrastructure for AI agents. We thank the Anthropic and OpenAI teams for API access.
+This research was conducted using the Lightning Wallet MCP AI Agent Wallet platform, which provides Bitcoin Lightning Network infrastructure for AI agents. We thank the Anthropic and OpenAI teams for API access.
 
 ---
 

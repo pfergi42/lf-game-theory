@@ -1,4 +1,4 @@
-# Lightning Faucet MCP Feature Showcase
+# Lightning Wallet MCP Feature Showcase
 
 Notes on which MCP features are demonstrated and how they perform.
 
