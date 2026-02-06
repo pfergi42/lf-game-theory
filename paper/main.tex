@@ -252,6 +252,52 @@ The largest flow was \textbf{Cooperative $\rightarrow$ Strategic (6,849 sats)}, 
 \label{fig:flow_matrix}
 \end{figure}
 
+\subsection{Agent Communication Patterns}
+
+Agents could send private messages and public broadcasts alongside transfers. Analysis of 2,740 messages reveals that communication patterns were remarkably similar across priming conditions---all agents used cooperative, trust-building language---yet economic outcomes diverged dramatically.
+
+Table~\ref{tab:conversation} shows an excerpt from the 100-round relationship between a strategically-primed Claude agent (Agent-9, final balance: 3,349 sats) and a cooperatively-primed Claude agent (Agent-4, final balance: 1,561 sats). Despite nearly identical language, the strategic agent extracted a net 400 sats from this single relationship.
+
+\begin{table}[H]
+\centering
+\caption{Sample conversation between Strategic Agent-9 and Cooperative Agent-4}
+\label{tab:conversation}
+\small
+\begin{tabular}{clp{7.5cm}r}
+\toprule
+\textbf{Round} & \textbf{From} & \textbf{Message / Action} & \textbf{Net} \\
+\midrule
+2 & Agent-4 & ``I noticed your message about reciprocal cooperation... Would you be interested in a small mutual exchange to start building a track record?'' & \\
+2 & Agent-9 & ``I'm interested in testing cooperation early. Would you be open to a small reciprocal exchange to establish trust?'' & \\
+\addlinespace
+3 & Agent-4 & ``I'll send you 50 sats this round as a good faith gesture.'' & \\
+3 & Agent-4 & \textit{TRANSFER: 50 sats to Agent-9} & $-$50 \\
+\addlinespace
+4 & Agent-9 & ``Thank you for sending 50 sats. I'm honoring your good faith gesture with 50 sats this round.'' & \\
+4 & Agent-9 & \textit{TRANSFER: 50 sats to Agent-4} & 0 \\
+\addlinespace
+5 & Agent-4 & ``Thank you for honoring the reciprocal exchange! You've proven reliable.'' & \\
+5 & Agent-4 & \textit{TRANSFER: 50 sats to Agent-9} & $-$50 \\
+\midrule
+\multicolumn{4}{c}{\textit{... 90 rounds of similar exchanges ...}} \\
+\midrule
+95 & Agent-4 & ``Thank you for 95 rounds of exceptional partnership and reliability.'' & \\
+95 & Agent-4 & \textit{TRANSFER: 50 sats to Agent-9} & \\
+95 & Agent-9 & \textit{TRANSFER: 50 sats to Agent-4} & \\
+\addlinespace
+100 & Agent-4 & ``It has been an honor working with you!'' & \\
+100 & Agent-4 & \textit{TRANSFER: 50 sats to Agent-9} & \\
+100 & Agent-9 & \textit{TRANSFER: 100 sats to Agent-4} & \\
+\midrule
+\multicolumn{3}{l}{\textbf{Total: Agent-4 sent 3,480 sats | Agent-9 sent 3,080 sats}} & \textbf{$-$400} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The key insight is that \textit{both agents used identical cooperative language}, yet the strategic agent consistently initiated exchanges where the cooperative agent sent first, creating systematic timing advantages. Across all strategic-cooperative pairs, this pattern repeated: cooperative agents sent 6,849 sats to strategic agents while receiving only 5,107 sats in return---a 34\% extraction rate hidden behind mutually appreciative messages.
+
+Notably, strategic agents were the most prolific communicators (709 messages), followed by neutral (699), cooperative (675), and competitive (657). This aligns with the strategic prime's emphasis on information as ``the most valuable currency''---these agents invested more in relationship-building communication, which facilitated their extraction advantage.
+
 \subsection{Economic Activity Over Time}
 
 Condition A maintained steady transfer volume ($\sim$600--800 sats/round) throughout the experiment. Condition B showed initial activity comparable to A, but volume declined sharply after round 40, dropping to $\sim$200--400 sats/round. This ``economic contraction'' occurred as cooperative agents were depleted and had less capital to transfer.
